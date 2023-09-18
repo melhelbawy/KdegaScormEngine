@@ -18,6 +18,6 @@ public class Resource : EntityCreation
 
     public Guid ScormPackageId { get; set; }
     public ScormPackage ScormPackage { get; set; } = null!;
-    public virtual ICollection<ResourceDependency>? Dependency { get; set; }
+    public virtual ICollection<ResourceDependency>? Dependencies { get; set; }
     public virtual ICollection<ResourceFile>? Files { get; set; }
 }

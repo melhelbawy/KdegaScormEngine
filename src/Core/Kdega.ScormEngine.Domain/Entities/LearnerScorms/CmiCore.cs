@@ -85,4 +85,6 @@ public class CmiCore : AuditableEntity
     public virtual ICollection<CmiObjective> CmiObjectives { get; set; } = new HashSet<CmiObjective>();
     public virtual ICollection<CmiLearnerPreference> CmiLearnerPreferences { get; set; } = new HashSet<CmiLearnerPreference>();
     public virtual ICollection<CmiInteraction> CmiInteractions { get; set; } = new HashSet<CmiInteraction>();
+    public virtual ICollection<CmiCommentFromLearner> CommentFromLearners { get; set; } = new HashSet<CmiCommentFromLearner>();
+    public virtual ICollection<CmiCommentFromLms> CommentFromLms { get; set; } = new HashSet<CmiCommentFromLms>();
 }

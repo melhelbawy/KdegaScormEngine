@@ -26,7 +26,7 @@ public class LearnerScormPackage : AuditableEntity
     public decimal? Score { get; set; }
 
     [JsonProperty("scorm_package_id")]
-    public Guid ScormContentId { get; set; }
+    public Guid ScormPackageId { get; set; }
 
     [JsonProperty("cmi_core_id")]
     public Guid CmiCoreId { get; set; }

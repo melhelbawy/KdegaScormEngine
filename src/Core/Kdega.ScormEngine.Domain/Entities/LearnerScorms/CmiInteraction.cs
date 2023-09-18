@@ -47,4 +47,8 @@ public class CmiInteraction : AuditableEntity
 
     [JsonProperty("cmi_core")]
     public CmiCore CmiCore { get; set; } = null!;
+
+
+    public virtual ICollection<CmiInteractionsCorrectResponse> InteractionsCorrectResponses { get; set; } = new HashSet<CmiInteractionsCorrectResponse>();
+    public virtual ICollection<CmiInteractionsObjective> InteractionsObjectives { get; set; } = new HashSet<CmiInteractionsObjective>();
 }
