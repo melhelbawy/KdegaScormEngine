@@ -1,4 +1,5 @@
-﻿using Kdega.ScormEngine.Application.Common.Models;
+﻿using Kdega.ScormEngine.API.Extensions;
+using Kdega.ScormEngine.Application.Common.Models;
 using Kdega.ScormEngine.Application.Interfaces;
 using Kdega.ScormEngine.Application.Services;
 using Kdega.ScormEngine.Persistence;
@@ -13,7 +14,10 @@ public static class DatabaseRegistration
         var serviceProvider = builder.Services.BuildServiceProvider();
         var env = serviceProvider.GetRequiredService<IHostEnvironment>();
 
-        RegisterSqlDbContext(builder);
+        if (env.IsTesting())
+            RegisterInMemoryDbContext(builder);
+        else
+            RegisterSqlDbContext(builder);
     }
     private static void RegisterSqlDbContext(WebApplicationBuilder builder)
     {

@@ -1,4 +1,5 @@
 ﻿using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
+using Kdega.ScormEngine.Domain.Entities.ScormPackages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,7 +9,8 @@ public class CmiCoreConfiguration : IEntityTypeConfiguration<CmiCore>
     public void Configure(EntityTypeBuilder<CmiCore> builder)
     {
         builder.HasOne(x => x.LearnerScormPackage)
-            .WithOne(x => x.CmiCore);
+            .WithOne(x => x.CmiCore)
+            .HasForeignKey<LearnerScormPackage>(x => x.CmiCoreId);
 
         builder.HasMany(x => x.CmiData)
             .WithOne(x => x.CmiCore)

@@ -1,4 +1,5 @@
 ﻿using Kdega.ScormEngine.Application.Interfaces;
+using Kdega.ScormEngine.Domain.Entities.Base;
 using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using Kdega.ScormEngine.Domain.Entities.ScormPackages;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,9 @@ public class KseDbContext : DbContext, IKseDbContext
     {
 
     }
+
+    public DbSet<EventLog> EventLogs => Set<EventLog>();
+
     #region SCORMs
     public DbSet<ScormPackage> ScormPackages => Set<ScormPackage>();
     public DbSet<Organization> Organizations => Set<Organization>();

@@ -1,12 +1,8 @@
-﻿using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
+﻿using Kdega.ScormEngine.Domain.Entities.Base;
+using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using Kdega.ScormEngine.Domain.Entities.ScormPackages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kdega.ScormEngine.Application.Interfaces;
 public interface IKseDbContext
@@ -16,6 +12,7 @@ public interface IKseDbContext
     int SaveChanges();
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
+    DbSet<EventLog> EventLogs { get; }
     #region SCORMs 
     #region Scorm Packages
     DbSet<ScormPackage> ScormPackages { get; }

@@ -51,7 +51,7 @@ public static class SeriLogConfiguration
             .Enrich.WithExceptionDetails()
             .WriteTo.Console()
             .WriteTo.File(Path.Combine(Environment.CurrentDirectory,
-                $"log-{Assembly.GetEntryAssembly().GetName().Name}-.log"),
+                $"log-{Assembly.GetEntryAssembly()!.GetName().Name}-.log"),
                 rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
             .WriteTo
                 .Logger(lc => lc.Filter
