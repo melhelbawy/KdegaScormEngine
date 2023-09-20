@@ -2,15 +2,15 @@
 using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using Kdega.ScormEngine.Domain.Entities.ScormPackages;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Kdega.ScormEngine.Persistence;
 public class KseDbContext : DbContext, IKseDbContext
 {
+    public KseDbContext(DbContextOptions options) : base(options)
+    {
+
+    }
     #region SCORMs
     public DbSet<ScormPackage> ScormPackages => Set<ScormPackage>();
     public DbSet<Organization> Organizations => Set<Organization>();
@@ -31,4 +31,10 @@ public class KseDbContext : DbContext, IKseDbContext
     public DbSet<CmiObjective> CmiObjectives => Set<CmiObjective>();
     public DbSet<ScormSession> ScormSessions => Set<ScormSession>();
     #endregion
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+    }
 }

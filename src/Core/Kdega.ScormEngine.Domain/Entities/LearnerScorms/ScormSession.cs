@@ -13,9 +13,9 @@ public class ScormSession : AuditableEntity
     public string? SessionId { get; set; } = LmsClient.SessionId;
     [JsonProperty("learner_id")]
     public string? LearnerId { get; set; }
-    [JsonProperty("startDatetime")]
+    [JsonProperty("start_datetime")]
     public DateTime? StartDatetime { get; set; }
-    [JsonProperty("endDatetime")]
+    [JsonProperty("end_datetime")]
     public DateTime? EndDatetime { get; set; }
 
     [StringLength(100)]
