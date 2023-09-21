@@ -17,5 +17,6 @@ public static class ServicesRegistration
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationLayer).Assembly));
+        services.AddMapster();
     }
 }
