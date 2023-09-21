@@ -27,6 +27,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Kdega.ScormEngine.Application\Kdega.ScormEngine.Application.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Kdega.ScormEngine.Infrastructure\Kdega.ScormEngine.Infrastructure.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Kdega.ScormEngine.Persistence\Kdega.ScormEngine.Persistence.csproj" />
 	</ItemGroup>
 
