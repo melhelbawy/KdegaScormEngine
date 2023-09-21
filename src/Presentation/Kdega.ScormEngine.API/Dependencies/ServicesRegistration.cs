@@ -1,4 +1,5 @@
-﻿using Kdega.ScormEngine.Application.Services;
+﻿using Kdega.ScormEngine.Application.Extensions;
+using Kdega.ScormEngine.Application.Services;
 
 namespace Kdega.ScormEngine.API.Dependencies;
 public static class ServicesRegistration
@@ -10,7 +11,7 @@ public static class ServicesRegistration
         services.AddHttpContextAccessor();
         services.AddSwagger();
         services.AddSingleton<CurrentUserService>();
-
+        services.AddApplicationServices();
 
         builder.AddDatabaseRegistration();
     }

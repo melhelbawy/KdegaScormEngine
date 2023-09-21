@@ -1,38 +1,53 @@
 using Kdega.ScormEngine.API.Dependencies;
 using Kdega.ScormEngine.API.Extensions;
+using Kdega.ScormEngine.Application.Behavior.ExceptionBehavior;
 using Kdega.ScormEngine.Application.Behavior.Logging;
 using Serilog;
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Host.ConfigureSerilog(builder.Configuration, builder.Environment);
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-
-builder.AddDependencyServices();
-
-var app = builder.Build();
-
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Host.ConfigureSerilog(builder.Configuration, builder.Environment);
+
+    builder.Services.AddControllers()
+        .AddCustomApiBehavior();
+
+    builder.Services.AddEndpointsApiExplorer();
+
+    builder.AddDependencyServices();
+
+
+    var app = builder.Build();
+
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    if (!app.Environment.IsTesting())
+        app.MigrateDatabase();
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.UseSerilogRequestLogging();
+
+    app.UseMiddleware<ExceptionMiddleware>();
+
+    app.Run();
 }
+catch (Exception ex)
+{
 
-if (!app.Environment.IsTesting())
-    app.MigrateDatabase();
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.UseSerilogRequestLogging();
-
-app.Run();
+    Log.Fatal(ex, "Unhandled exception");
+}
+finally
+{
+    Log.Information("Shut down complete");
+    Log.CloseAndFlush();
+}
+public partial class Program { }
