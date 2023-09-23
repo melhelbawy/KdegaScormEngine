@@ -1,5 +1,4 @@
-﻿using Kdega.ScormEngine.Application.Behavior;
-using Kdega.ScormEngine.Application.Handlers.LmsSessions.Commands;
+﻿using Kdega.ScormEngine.Application.Handlers.LmsSessions.Commands;
 using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -25,11 +24,10 @@ public class GetCurrentLearnerSessionIdQueryHandler : BaseHandler<ScormSession>,
             .FirstOrDefaultAsync(x => x.LearnerId == request.LearnerId
                                                                       && x.CmiCoreId == Guid.Parse(request.CmiCoreId), cancellationToken);
 
-        Check.NotNull(currentUserSession, "currentUserSession");
+        //Check.NotNull(currentUserSession, "currentUserSession");
 
         var initSession = await Mediator.Send(new InitLearnerSessionCommand()
         {
-            ScormContentId = request.ScormContentId,
             CmiCoreId = request.CmiCoreId,
             ScoIdentifier = request.ScoIdentifier,
             LearnerId = request.LearnerId

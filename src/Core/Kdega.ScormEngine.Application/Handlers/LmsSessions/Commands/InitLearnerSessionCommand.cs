@@ -6,7 +6,6 @@ namespace Kdega.ScormEngine.Application.Handlers.LmsSessions.Commands;
 public class InitLearnerSessionCommand : IRequest<string>
 {
     public string CmiCoreId { get; set; } = null!;
-    public string ScormContentId { get; set; } = null!;
     public string LearnerId { get; set; } = null!;
     public string ScoIdentifier { get; set; } = "default";
 }
