@@ -28,8 +28,4 @@
 		<ProjectReference Include="..\Kdega.ScormEngine.Domain\Kdega.ScormEngine.Domain.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Handlers\ScormContents\Models\" />
-	</ItemGroup>
-
 </Project>

@@ -1,21 +1,23 @@
-﻿using Kdega.ScormEngine.Application.ScormXmlObject;
+﻿using Kdega.ScormEngine.Application.Handlers.ScormContents.Models;
+using Kdega.ScormEngine.Application.ScormXmlObject;
 using Kdega.ScormEngine.Domain.Entities.ScormPackages;
+using Mapster;
 using MediatR;
 using System.Xml;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormContents.Commands.Uploading;
-public class ParseManifestCommand : IRequest<bool>
+public class ParseManifestCommand : IRequest<ScormPackageManifestDto>
 {
     public Guid ScormPackageId { get; set; }
     public string PathToManifest { get; set; } = null!;
 }
-public class ParseManifestCommandHandler : BaseHandler<ScormPackage>, IRequestHandler<ParseManifestCommand, bool>
+public class ParseManifestCommandHandler : BaseHandler<ScormPackage>, IRequestHandler<ParseManifestCommand, ScormPackageManifestDto>
 {
     public ParseManifestCommandHandler(IServiceProvider provider) : base(provider)
     {
     }
 
-    public async Task<bool> Handle(ParseManifestCommand request, CancellationToken cancellationToken)
+    public async Task<ScormPackageManifestDto> Handle(ParseManifestCommand request, CancellationToken cancellationToken)
     {
         var scormPackage = Context.ScormPackages.FirstOrDefault(x => x.Id == request.ScormPackageId);
 
@@ -35,8 +37,8 @@ public class ParseManifestCommandHandler : BaseHandler<ScormPackage>, IRequestHa
         scormPackage.ManifestMetadataLocation = GetChildElementInnerText(metadata!, "adlcp:location")!;
 
         var organizations = ScormDocumentParser.ParseXmlNode(xmlDocument, "organizations");
-        scormPackage.DefaultOrganizationIdentifier = organizations?.Attributes?["xml:base"]?.InnerText;
-        var packageOrganizations = MapOrganizations(organizations!);
+        scormPackage.DefaultOrganizationIdentifier = organizations?.Attributes?["default"]?.InnerText;
+        var packageOrganizations = MapOrganizations(organizations!, scormPackage);
         scormPackage.Organizations = packageOrganizations;
 
         var resources = ScormDocumentParser.ParseXmlNode(xmlDocument, "resources");
@@ -49,7 +51,10 @@ public class ParseManifestCommandHandler : BaseHandler<ScormPackage>, IRequestHa
         scormPackage.ScormVersion = schemaVersion.Equals("1.2") ? "1.2" : "1.3";
 
         Context.ScormPackages.Update(scormPackage);
-        return await Context.SaveChangesAsync(cancellationToken) > 0;
+
+        await Context.SaveChangesAsync(cancellationToken);
+
+        return scormPackage.Adapt<ScormPackageManifestDto>();
     }
 
     static string? GetChildElementInnerText(XmlNode parent, string childElementName)
@@ -62,50 +67,35 @@ public class ParseManifestCommandHandler : BaseHandler<ScormPackage>, IRequestHa
         return null;
     }
 
-    private List<Organization> MapOrganizations(XmlNode organizations)
+    private List<Organization> MapOrganizations(XmlNode organizations, ScormPackage package)
     {
-        return (from XmlNode organization in organizations!.ChildNodes
-                where organization is XmlElement { Name: "organization" }
-                select new Organization()
-                {
-                    Identifier = organization.Attributes?["identifier"]?.InnerText ?? "",
-                    Structure = organization.Attributes?["adlseq:objectivesGlobalToSystem"]?.InnerText ?? null,
-                    AdlseqObjectivesGlobalToSystem = organization.Attributes?["structure"]?.InnerText ?? "false",
-                    Title = GetChildElementInnerText(organization, "title")!,
-                    MetadataLocation = GetChildElementInnerText(organization, "metadata")!,
-                    ImsssSequencing = GetChildElementInnerText(organization, "imsss:sequencing")!,
-                    Items = MapOrganizationItems(organization)
-                }).ToList();
+        foreach (XmlNode organization in organizations.ChildNodes)
+        {
+            if (organization is not XmlElement { Name: "organization" }) continue;
+
+            var packageOrganization = new Organization()
+            {
+                Identifier = organization.Attributes?["identifier"]?.InnerText ?? "",
+                Structure = organization.Attributes?["adlseq:objectivesGlobalToSystem"]?.InnerText ?? null,
+                AdlseqObjectivesGlobalToSystem = organization.Attributes?["structure"]?.InnerText ?? "false",
+                Title = GetChildElementInnerText(organization, "title")!,
+                MetadataLocation = GetChildElementInnerText(organization, "metadata")!,
+                ImsssSequencing = GetChildElementInnerText(organization, "imsss:sequencing")!,
+            };
+            packageOrganization.Items = MapOrganizationItems(organization, packageOrganization);
+
+            package.Organizations.Add(packageOrganization);
+        }
+        return package.Organizations.ToList();
     }
 
-    List<OrganizationItem> MapOrganizationItem(XmlNode itemRoot)
+    private static List<OrganizationItem> MapOrganizationItem(XmlNode itemRoot, OrganizationItem parentItem)
     {
-        var items = new List<OrganizationItem>();
-
         foreach (XmlNode item in itemRoot.ChildNodes)
         {
-            var childItems = new List<OrganizationItem>();
             if (item.Name is "#comment" or "#text" or "title") continue;
 
-            if (item.NodeType == XmlNodeType.Element && item.HasChildNodes)
-                childItems = MapOrganizationItems(item);
-            else
-                childItems.Add(new OrganizationItem()
-                {
-                    Identifier = item.Attributes?["identifier"]?.InnerText ?? "",
-                    IdentifierRef = item.Attributes?["identifierref"]?.InnerText ?? "",
-                    IsVisible = item.Attributes?["identifier"]?.InnerText == "true" ? true : false,
-                    Parameters = item.Attributes?["parameters"]?.InnerText ?? "",
-                    Title = GetChildElementInnerText(item, "title")!,
-                    AdlcpTimeLimitAction = GetChildElementInnerText(item, "adlcp:timeLimitAction")!,
-                    AdlcpDataFromLms = GetChildElementInnerText(item, "adlcp:dataFromLMS")!,
-                    AdlcpCompletionThresholds = GetChildElementInnerText(item, "adlcp:completionThreshold")!,
-                    ImsssSequencing = GetChildElementInnerText(item, "imsss:sequencing")!,
-                    AdlnavPresentation = GetChildElementInnerText(item, "adlnav:presentation")!,
-                    SubOrganizationItems = null
-                });
-
-            items.Add(new OrganizationItem()
+            parentItem.SubOrganizationItems?.Add(new OrganizationItem()
             {
                 Identifier = item.Attributes?["identifier"]?.InnerText ?? "",
                 IdentifierRef = item.Attributes?["identifierref"]?.InnerText ?? "",
@@ -117,42 +107,42 @@ public class ParseManifestCommandHandler : BaseHandler<ScormPackage>, IRequestHa
                 AdlcpCompletionThresholds = GetChildElementInnerText(item, "adlcp:completionThreshold")!,
                 ImsssSequencing = GetChildElementInnerText(item, "imsss:sequencing")!,
                 AdlnavPresentation = GetChildElementInnerText(item, "adlnav:presentation")!,
-                SubOrganizationItems = childItems
+                SubOrganizationItems = MapOrganizationItem(item, parentItem)
             });
         }
-        return items;
+        return parentItem.SubOrganizationItems.ToList();
     }
 
-    List<OrganizationItem> MapOrganizationItems(XmlNode organization)
+    private List<OrganizationItem> MapOrganizationItems(XmlNode organization, Organization pkgOrganization)
     {
         var items = new List<OrganizationItem>();
         foreach (XmlNode item in organization.ChildNodes)
         {
             if (item.Name == "#comment") continue;
 
-            if (item.NodeType == XmlNodeType.Element && item.HasChildNodes &&
-                item.LastChild?.Name != "#text")
+            if (item.NodeType != XmlNodeType.Element || !item.HasChildNodes ||
+                item.LastChild?.Name == "#text") continue;
+            var pkgItem = new OrganizationItem
             {
-                items.Add(new OrganizationItem()
-                {
-                    Identifier = item.Attributes?["identifier"]?.InnerText ?? "",
-                    IdentifierRef = item.Attributes?["identifierref"]?.InnerText ?? "",
-                    IsVisible = item.Attributes?["identifier"]?.InnerText == "true" ? true : false,
-                    Parameters = item.Attributes?["parameters"]?.InnerText ?? "",
-                    Title = GetChildElementInnerText(item, "title")!,
-                    AdlcpTimeLimitAction = GetChildElementInnerText(item, "adlcp:timeLimitAction")!,
-                    AdlcpDataFromLms = GetChildElementInnerText(item, "adlcp:dataFromLMS")!,
-                    AdlcpCompletionThresholds = GetChildElementInnerText(item, "adlcp:completionThreshold")!,
-                    ImsssSequencing = GetChildElementInnerText(item, "imsss:sequencing")!,
-                    AdlnavPresentation = GetChildElementInnerText(item, "adlnav:presentation")!,
-                    SubOrganizationItems = MapOrganizationItem(item)
-                });
-            }
+                Identifier = item.Attributes?["identifier"]?.InnerText ?? "",
+                IdentifierRef = item.Attributes?["identifierref"]?.InnerText ?? "",
+                IsVisible = item.Attributes?["identifier"]?.Value == "true" ? true : false,
+                Parameters = item.Attributes?["parameters"]?.InnerText ?? "",
+                Title = GetChildElementInnerText(item, "title")!,
+                AdlcpTimeLimitAction = GetChildElementInnerText(item, "adlcp:timeLimitAction")!,
+                AdlcpDataFromLms = GetChildElementInnerText(item, "adlcp:dataFromLMS")!,
+                AdlcpCompletionThresholds = GetChildElementInnerText(item, "adlcp:completionThreshold")!,
+                ImsssSequencing = GetChildElementInnerText(item, "imsss:sequencing")!,
+                AdlnavPresentation = GetChildElementInnerText(item, "adlnav:presentation")!,
+            };
+
+            pkgItem.SubOrganizationItems = MapOrganizationItem(item, pkgItem);
+            pkgOrganization.Items.Add(pkgItem);
         }
         return items;
     }
 
-    List<Resource> MapManifestResources(XmlNode resources, ScormPackage package)
+    private IEnumerable<Resource> MapManifestResources(XmlNode resources, ScormPackage package)
     {
         var response = new List<Resource>();
         foreach (XmlNode resource in resources.ChildNodes)
@@ -173,7 +163,7 @@ public class ParseManifestCommandHandler : BaseHandler<ScormPackage>, IRequestHa
         return response;
     }
 
-    List<ResourceFile> MapResourceFiles(XmlNode resource, Resource packageResource)
+    private List<ResourceFile> MapResourceFiles(XmlNode resource, Resource packageResource)
     {
         var response = new List<ResourceFile>();
         foreach (XmlNode file in resource.ChildNodes)
@@ -189,7 +179,7 @@ public class ParseManifestCommandHandler : BaseHandler<ScormPackage>, IRequestHa
         return response;
     }
 
-    List<ResourceDependency> MapResourceDependencies(XmlNode resource, ScormPackage package)
+    private List<ResourceDependency> MapResourceDependencies(XmlNode resource, ScormPackage package)
     {
         var response = new List<ResourceDependency>();
         foreach (XmlNode file in resource.ChildNodes)

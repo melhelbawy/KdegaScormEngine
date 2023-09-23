@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Core;
-using Serilog.Exceptions;
 using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -48,7 +47,7 @@ public static class SeriLogConfiguration
 
         var logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .Enrich.WithExceptionDetails()
+            //.Enrich.WithExceptionDetails()
             .WriteTo.Console()
             .WriteTo.File(Path.Combine(Environment.CurrentDirectory,
                 $"log-{Assembly.GetEntryAssembly()!.GetName().Name}-.log"),

@@ -4,6 +4,7 @@ using Kdega.ScormEngine.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kdega.ScormEngine.Persistence.Migrations
 {
     [DbContext(typeof(KseDbContext))]
-    partial class KseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230923185153_SetManifestPropsNull")]
+    partial class SetManifestPropsNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -42,11 +42,13 @@ public class UploadScormPackageCommandHandler : BaseHandler<ScormPackage>, IRequ
         };
 
         await Context.ScormPackages.AddAsync(entry, cancellationToken);
-
+        await Context.SaveChangesAsync(cancellationToken);
 
         var scormXml = await _mediator.Send(new ParseManifestCommand()
         {
+            ScormPackageId = entry.Id,
             PathToManifest = _objectManager.FileFullPath(scormFiles?.FirstOrDefault(c => c.Name.Contains("manifest"))?.Path!)
+
         }, cancellationToken);
 
 

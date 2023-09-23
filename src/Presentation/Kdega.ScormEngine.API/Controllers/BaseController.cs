@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace Kdega.ScormEngine.API.Controllers;
+
+[Route("api/v1/[controller]")]
 public class BaseController : Controller
 {
     protected bool IsAuthenticated => (User.Identity?.IsAuthenticated)!.Value;
