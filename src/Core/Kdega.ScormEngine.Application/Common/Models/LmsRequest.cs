@@ -23,8 +23,8 @@ public class LmsRequest
     /// <summary>
     /// Identifier for the SCORM course
     /// </summary>
-    [JsonProperty("Scorm_content_id")]
-    public string? ScormContentId { get; set; }
+    [JsonProperty("learner_Scorm_package_id")]
+    public string? LearnerScormPackageId { get; set; }
     /// <summary>
     /// DataItem for LMSSet/Get Calls
     /// </summary>
