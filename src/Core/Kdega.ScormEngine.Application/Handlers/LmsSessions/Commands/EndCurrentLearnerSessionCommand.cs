@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 namespace Kdega.ScormEngine.Application.Handlers.LmsSessions.Commands;
 public class EndCurrentLearnerSessionCommand : IRequest<bool>
 {
-    public string? SessionId { get; set; }
-    public string? LearnerId { get; set; }
+    public string SessionId { get; set; } = null!;
+    public string LearnerId { get; set; } = null!;
 }
 
 public class EndCurrentLearnerSessionCommandHandler : BaseHandler<ScormSession>, IRequestHandler<EndCurrentLearnerSessionCommand, bool>

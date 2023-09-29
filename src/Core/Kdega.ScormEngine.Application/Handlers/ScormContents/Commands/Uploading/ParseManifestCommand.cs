@@ -110,7 +110,7 @@ public class ParseManifestCommandHandler : BaseHandler<ScormPackage>, IRequestHa
                 SubOrganizationItems = MapOrganizationItem(item, parentItem)
             });
         }
-        return parentItem.SubOrganizationItems.ToList();
+        return parentItem.SubOrganizationItems?.ToList()!;
     }
 
     private List<OrganizationItem> MapOrganizationItems(XmlNode organization, Organization pkgOrganization)

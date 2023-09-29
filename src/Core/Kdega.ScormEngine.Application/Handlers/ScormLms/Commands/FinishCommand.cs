@@ -28,7 +28,7 @@ public class FinishCommandHandler : BaseHandler<CmiData>, IRequestHandler<Finish
     public async Task<LmsRequest> Handle(FinishCommand request, CancellationToken cancellationToken)
     {
         var response = new LmsRequest();
-        if (request.Request is null)
+        if (request?.Request is null)
         {
             response.ErrorCode = "201";
             response.ErrorString = "Invalid or incomplete data, can't initialize";
@@ -41,7 +41,7 @@ public class FinishCommandHandler : BaseHandler<CmiData>, IRequestHandler<Finish
             await Mediator.Send(new EndCurrentLearnerSessionCommand()
             {
                 SessionId = request.Request.SessionId,
-                LearnerId = request.Request.LearnerId
+                LearnerId = request.Request.LearnerId!
             }, cancellationToken);
         }
 
@@ -51,7 +51,7 @@ public class FinishCommandHandler : BaseHandler<CmiData>, IRequestHandler<Finish
                 .FirstOrDefaultAsync(x => x.Id == Guid.Parse(request.Request.CoreId), cancellationToken);
             Check.NotNull(cmiCore, nameof(cmiCore));
 
-            var totalTime = ScormDataValidatorHelper.AddCmiTime(cmiCore.SessionTime, cmiCore.TotalTime);
+            var totalTime = ScormDataValidatorHelper.AddCmiTime(cmiCore.SessionTime!, cmiCore.TotalTime!);
 
             if (cmiCore.Exit != null && cmiCore.Exit.Equals("suspend", StringComparison.CurrentCultureIgnoreCase))
             {

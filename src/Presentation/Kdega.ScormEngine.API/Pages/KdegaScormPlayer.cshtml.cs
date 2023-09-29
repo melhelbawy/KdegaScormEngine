@@ -76,5 +76,5 @@ public class KdegaScormPlayerModel : PageModel
         }).Result;
 
     private string GetPackageLearnerScoCoreId() =>
-        _mediator.Send(new GetCurrentLearnerCmiCoreIdQuery(Guid.Parse(ScormLearnerPackageId))).Result;
+        _mediator.Send(new GetCurrentLearnerCmiCoreIdQuery(Guid.Parse(ScormLearnerPackageId!))).Result;
 }
