@@ -30,10 +30,8 @@ public class InitializeCommandHandler : BaseHandler<CmiCore>, IRequestHandler<In
             return request.Request;
         }
 
-        var cmiCoreId = await Mediator.Send(new GetCurrentLearnerCmiCoreIdQuery
-        {
-            ScormLearnerPackageId = Guid.Parse(request.Request.LearnerScormPackageId!)
-        }, cancellationToken);
+        var cmiCoreId = await Mediator.Send(new GetCurrentLearnerCmiCoreIdQuery(Guid.Parse(request.Request.LearnerScormPackageId!))
+            , cancellationToken);
 
         if (string.IsNullOrEmpty(cmiCoreId))
         {

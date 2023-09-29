@@ -9,7 +9,9 @@ public static class ServicesRegistration
     {
         var services = builder.Services;
 
+        services.AddRazorPages();
         services.AddHttpContextAccessor();
+        services.AddHealthChecks();
         services.AddSwagger();
         services.AddSingleton<CurrentUserService>();
         services.AddApplicationServices();

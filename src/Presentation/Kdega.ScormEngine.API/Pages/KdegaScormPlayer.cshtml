@@ -1,0 +1,63 @@
+﻿@page "/kdega-scorm-player"
+@model Kdega.ScormEngine.API.Pages.KdegaScormPlayerModel
+@{
+    ViewData["Title"] = "dega Scorm Player";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Kdega SCORM Player</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script src="js/kdegaScormPlayer.js"></script>
+    <script type="text/javascript">
+        //<![CDATA[
+        if (window.top !== window.self) {
+            document.write = "";
+            window.top.location = window.self.location;
+            setTimeout(function () {
+                document.body.innerHTML = '';
+            }, 1);
+            window.self.onload = function (evt) {
+                document.body.innerHTML = '';
+            };
+        }
+        //]]>
+    </script>
+</head>
+<body>
+    <div id="SCO1">
+        <iframe id="kdegaPlayer" src="@Model.IFrameSrc" style="width: 1440px; height: 775px; border: 0;"></iframe>
+    </div>
+    <div id="divDebug"></div>
+    <script type="text/javascript">
+        {
+        @Html.Raw(@Model.LaunchParameters);
+        }
+        $(document).ready(function () {
+            var $iframes = $("iframe");
+            // Find & save the aspect ratio for all iframes
+            $iframes.each(function () {
+                $(this).data("ratio", this.height / this.width)
+                    // Remove the hardcoded width & height attributes
+                    .removeAttr("width")
+                    .removeAttr("height");
+            });
+            // Resize the iframes when the window is resized
+            $(window).resize(function () {
+                $iframes.each(function () {
+                    // Get the parent container's width
+                    var width = $(this).parent().width();
+                    $(this).width(width)
+                        .height(width * $(this).data("ratio"));
+                });
+                // Resize to fix all iframes on page load.
+            }).resize();
+        });
+            //const frame = document.getElementById('SCO1');
+            //frame.contentWindow.postMessage('Scorm LMS Inilializing', '*');
+    </script>
+</body>
+</html>

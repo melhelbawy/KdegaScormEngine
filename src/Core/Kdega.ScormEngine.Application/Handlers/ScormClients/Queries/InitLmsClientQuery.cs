@@ -23,8 +23,8 @@ public class GetScoClientQueryHandler : BaseHandler<CmiCore>, IRequestHandler<In
     public async Task<LmsClientDto> Handle(InitLmsClientQuery request, CancellationToken cancellationToken)
     {
         var coreId =
-            await Mediator.Send(new GetCurrentLearnerCmiCoreIdQuery
-            { ScormLearnerPackageId = Guid.Parse(request.ScormLearnerPackageId) }, cancellationToken);
+            await Mediator.Send(new GetCurrentLearnerCmiCoreIdQuery(Guid.Parse(request.ScormLearnerPackageId)),
+                cancellationToken);
 
         var response = new LmsClientDto
         {

@@ -8,6 +8,11 @@ namespace Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Queries;
 public class GetCurrentLearnerCmiCoreIdQuery : IRequest<string>
 {
     public Guid ScormLearnerPackageId { get; set; }
+
+    public GetCurrentLearnerCmiCoreIdQuery(Guid scormLearnerPackageId)
+    {
+        ScormLearnerPackageId = scormLearnerPackageId;
+    }
 }
 
 public class GetCurrentLearnerCmiCoreIdQueryHandler : BaseHandler<CmiCore>, IRequestHandler<GetCurrentLearnerCmiCoreIdQuery, string>

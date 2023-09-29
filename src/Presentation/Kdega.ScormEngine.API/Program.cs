@@ -1,8 +1,11 @@
+using HealthChecks.UI.Client;
 using Kdega.ScormEngine.API.Dependencies;
 using Kdega.ScormEngine.API.Extensions;
 using Kdega.ScormEngine.Application.Behavior.ExceptionBehavior;
 using Kdega.ScormEngine.Application.Behavior.Logging;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
+
 try
 {
     var builder = WebApplication.CreateBuilder(args);
@@ -30,9 +33,22 @@ try
 
     app.UseHttpsRedirection();
 
+    app.UseRouting();
+
+    app.UseStaticFiles();
+
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.MapHealthChecks("/health");
+
+    app.MapHealthChecks("/health/details", new HealthCheckOptions()
+    {
+        ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+    });
+
+    app.MapRazorPages();
 
     app.UseSerilogRequestLogging();
 
@@ -50,4 +66,7 @@ finally
     Log.Information("Shut down complete");
     Log.CloseAndFlush();
 }
-public partial class Program { }
+namespace Kdega.ScormEngine.API
+{
+    public partial class Program { }
+}
