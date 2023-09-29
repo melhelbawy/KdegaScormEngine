@@ -2,7 +2,7 @@ using Kdega.ScormEngine.Application.Constants;
 using Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Queries;
 using Kdega.ScormEngine.Application.Handlers.LmsSessions.Commands;
 using Kdega.ScormEngine.Application.Handlers.ScormClients.Models;
-using Kdega.ScormEngine.Application.Handlers.ScormContents.Queries;
+using Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 

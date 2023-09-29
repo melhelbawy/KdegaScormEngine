@@ -1,6 +1,6 @@
-﻿using Kdega.ScormEngine.Application.Handlers.ScormContents.Commands.Uploading;
-using Kdega.ScormEngine.Application.Handlers.ScormContents.Models;
-using Kdega.ScormEngine.Application.Handlers.ScormContents.Queries;
+﻿using Kdega.ScormEngine.Application.Handlers.ScormPackages.Commands.Uploading;
+using Kdega.ScormEngine.Application.Handlers.ScormPackages.Models;
+using Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
 using Kdega.ScormEngine.Infrastructure.Storage.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +31,7 @@ public class ScormPackagesController : BaseController
     [SwaggerOperation("Kdega Scorm Scorm package manifest parsing endpoint")]
     [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ScormPackageManifestDto))]
     [Produces(MediaTypeNames.Application.Json)]
-    public async Task<JsonResult> ParseManifestCommand(ParseManifestCommand command)
+    public async Task<JsonResult> ParseManifest(ParseManifestCommand command)
     {
         return Json(await Send(command));
     }

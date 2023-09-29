@@ -1,11 +1,11 @@
-﻿using Kdega.ScormEngine.Application.Handlers.ScormContents.Models;
+﻿using Kdega.ScormEngine.Application.Handlers.ScormPackages.Models;
 using Kdega.ScormEngine.Application.ScormXmlObject;
 using Kdega.ScormEngine.Domain.Entities.ScormPackages;
 using Mapster;
 using MediatR;
 using System.Xml;
 
-namespace Kdega.ScormEngine.Application.Handlers.ScormContents.Commands.Uploading;
+namespace Kdega.ScormEngine.Application.Handlers.ScormPackages.Commands.Uploading;
 public class ParseManifestCommand : IRequest<ScormPackageManifestDto>
 {
     public Guid ScormPackageId { get; set; }

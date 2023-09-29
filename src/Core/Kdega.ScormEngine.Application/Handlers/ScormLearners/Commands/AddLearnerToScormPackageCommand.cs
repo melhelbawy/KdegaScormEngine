@@ -1,22 +1,23 @@
 ﻿using Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Commands;
+using Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
 using Kdega.ScormEngine.Domain.Entities.ScormPackages;
 using MediatR;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormLearners.Commands;
-public class ProcessLearnerScormPackageCommand : IRequest<bool>
+public class AddLearnerToScormPackageCommand : IRequest<bool>
 {
     public string LearnerId { get; set; } = null!;
     public string ScormPackageId { get; set; } = null!;
 }
 
-public class ProcessUserScormModuleCommandHandler : BaseHandler<LearnerScormPackage>, IRequestHandler<ProcessLearnerScormPackageCommand, bool>
+public class ProcessUserScormModuleCommandHandler : BaseHandler<LearnerScormPackage>, IRequestHandler<AddLearnerToScormPackageCommand, bool>
 {
     public ProcessUserScormModuleCommandHandler(IServiceProvider provider) : base(provider)
     {
     }
-    public async Task<bool> Handle(ProcessLearnerScormPackageCommand request, CancellationToken cancellationToken)
+    public async Task<bool> Handle(AddLearnerToScormPackageCommand request, CancellationToken cancellationToken)
     {
-        if (IsUserEnrolled(request.LearnerId, request.ScormPackageId)) return false;
+        if (await IsUserEnrolled(request.LearnerId, request.ScormPackageId)) return false;
 
         await Context.LearnerScormPackages.AddAsync(new LearnerScormPackage
         {
@@ -34,10 +35,13 @@ public class ProcessUserScormModuleCommandHandler : BaseHandler<LearnerScormPack
         return await Context.SaveChangesAsync(cancellationToken) > 0;
     }
 
-    private bool IsUserEnrolled(string learnerId, string scormContentId)
+    private async Task<bool> IsUserEnrolled(string learnerId, string scormContentId)
     {
-        return Context.LearnerScormPackages
-            .Any(x => x.LearnerId == learnerId && x.ScormPackageId == Guid.Parse(scormContentId));
+        return await Mediator.Send(new IsLearnerJoinedPackageQuery()
+        {
+            LearnerId = learnerId,
+            ScormPackageId = Guid.Parse(scormContentId)
+        });
     }
 
 

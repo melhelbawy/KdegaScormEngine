@@ -19,7 +19,7 @@ public class EndCurrentLearnerSessionCommandHandler : BaseHandler<ScormSession>,
     public async Task<bool> Handle(EndCurrentLearnerSessionCommand request, CancellationToken cancellationToken)
     {
         var session = await Context.ScormSessions
-            .FirstOrDefaultAsync(x => x.LearnerId == request.LearnerId && x.Id == Guid.Parse(request.SessionId), cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == Guid.Parse(request.SessionId), cancellationToken);
 
         Check.NotNull(session, nameof(session));
 

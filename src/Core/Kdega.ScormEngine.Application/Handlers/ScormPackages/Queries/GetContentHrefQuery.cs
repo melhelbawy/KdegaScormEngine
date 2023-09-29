@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kdega.ScormEngine.Application.Handlers.ScormContents.Queries;
+namespace Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
 public class GetContentHrefQuery : IRequest<string>
 {
     public Guid ScormPackageId { get; set; }

@@ -3,7 +3,7 @@ using Kdega.ScormEngine.Domain.Entities.ScormPackages;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 
-namespace Kdega.ScormEngine.Application.Handlers.ScormContents.Commands.Uploading;
+namespace Kdega.ScormEngine.Application.Handlers.ScormPackages.Commands.Uploading;
 public class UploadScormPackageCommand : IRequest<bool>
 {
     public string PackageTitle { get; set; } = null!;

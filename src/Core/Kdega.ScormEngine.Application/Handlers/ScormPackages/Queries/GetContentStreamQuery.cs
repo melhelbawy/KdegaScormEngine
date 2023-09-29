@@ -1,7 +1,7 @@
 ﻿using Kdega.ScormEngine.Application.Interfaces;
 using MediatR;
 
-namespace Kdega.ScormEngine.Application.Handlers.ScormContents.Queries;
+namespace Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
 public class GetContentStreamQuery : IRequest<Stream>
 {
     public string Path { get; set; } = null!;

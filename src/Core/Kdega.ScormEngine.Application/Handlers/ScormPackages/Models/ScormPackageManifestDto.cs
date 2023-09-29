@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Kdega.ScormEngine.Application.Handlers.ScormContents.Models;
+namespace Kdega.ScormEngine.Application.Handlers.ScormPackages.Models;
 public class ScormPackageManifestDto
 {
     [JsonProperty("title_from_manifest")]
