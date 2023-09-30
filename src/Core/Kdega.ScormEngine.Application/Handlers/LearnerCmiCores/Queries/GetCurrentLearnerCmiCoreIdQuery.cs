@@ -5,23 +5,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Queries;
 
-public class GetCurrentLearnerCmiCoreIdQuery : IRequest<string>
+public class GetCurrentLearnerCmiDataIdQuery : IRequest<string>
 {
     public Guid ScormLearnerPackageId { get; set; }
 
-    public GetCurrentLearnerCmiCoreIdQuery(Guid scormLearnerPackageId)
+    public GetCurrentLearnerCmiDataIdQuery(Guid scormLearnerPackageId)
     {
         ScormLearnerPackageId = scormLearnerPackageId;
     }
 }
 
-public class GetCurrentLearnerCmiCoreIdQueryHandler : BaseHandler<CmiCore>, IRequestHandler<GetCurrentLearnerCmiCoreIdQuery, string>
+public class GetCurrentLearnerCmiCoreIdQueryHandler : BaseHandler<CmiCore>, IRequestHandler<GetCurrentLearnerCmiDataIdQuery, string>
 {
     public GetCurrentLearnerCmiCoreIdQueryHandler(IServiceProvider provider) : base(provider)
     {
     }
 
-    public async Task<string> Handle(GetCurrentLearnerCmiCoreIdQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(GetCurrentLearnerCmiDataIdQuery request, CancellationToken cancellationToken)
     {
         var cmiCore = await Context.CmiCores.FirstOrDefaultAsync(x => x.LearnerScormPackageId == request.ScormLearnerPackageId, CancellationToken.None);
 

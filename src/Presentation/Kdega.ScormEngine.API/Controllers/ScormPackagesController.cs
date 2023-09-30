@@ -41,7 +41,7 @@ public class ScormPackagesController : BaseController
     [Produces(MediaTypeNames.Application.Octet)]
     public async Task<IActionResult> GetObjectStreamAsync([FromRoute] string path)
     {
-        var stream = await Mediator.Send(new GetContentStreamQuery() { Path = path });
+        var stream = await Mediator.Send(new GetScormPackageStreamQuery() { Path = path });
         var filename = path.GetPathSegments().Last();
 
         return File(stream, filename.GetObjectType());

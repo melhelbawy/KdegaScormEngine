@@ -2,12 +2,12 @@
 using MediatR;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
-public class GetContentStreamQuery : IRequest<Stream>
+public class GetScormPackageStreamQuery : IRequest<Stream>
 {
     public string Path { get; set; } = null!;
 }
 
-public class GetContentStreamQueryHandler : IRequestHandler<GetContentStreamQuery, Stream>
+public class GetContentStreamQueryHandler : IRequestHandler<GetScormPackageStreamQuery, Stream>
 {
     private readonly IObjectManager _objectManager;
 
@@ -16,7 +16,7 @@ public class GetContentStreamQueryHandler : IRequestHandler<GetContentStreamQuer
         _objectManager = objectManager;
     }
 
-    public async Task<Stream> Handle(GetContentStreamQuery request, CancellationToken cancellationToken)
+    public async Task<Stream> Handle(GetScormPackageStreamQuery request, CancellationToken cancellationToken)
     {
         return await _objectManager.GetObjectStreamAsync(request.Path);
     }

@@ -32,7 +32,7 @@ public class KdegaScormPlayerModel : PageModel
         LearnerId = Request.Query["learnerId"]!;
         var scoLaunch = GetCourseInformation(LearnerId);
         LaunchParameters = SetupJavaScript(scoLaunch);
-        var stream = _mediator.Send(new GetContentStreamQuery { Path = Request.Query["path"]! });
+        var stream = _mediator.Send(new GetScormPackageStreamQuery { Path = Request.Query["path"]! });
     }
     private string SetupJavaScript(LmsClientDto scoLaunch)
     {

@@ -42,7 +42,7 @@ public class GetScoClientQueryHandler : BaseHandler<CmiCore>, IRequestHandler<In
                 LearnerId = request.LearnerId,
                 ScormContentId = request.ScormLearnerPackageId
             }, cancellationToken),
-            ScoAddress = await Mediator.Send(new GetContentHrefQuery(Guid.Parse(request.ScormLearnerPackageId)), cancellationToken)
+            ScoAddress = await Mediator.Send(new GetScormPackageHrefQuery(Guid.Parse(request.ScormLearnerPackageId)), cancellationToken)
         };
         return response;
     }

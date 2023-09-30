@@ -3,22 +3,22 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
-public class GetContentHrefQuery : IRequest<string>
+public class GetScormPackageHrefQuery : IRequest<string>
 {
     public Guid ScormPackageId { get; set; }
 
-    public GetContentHrefQuery(Guid scormContentId)
+    public GetScormPackageHrefQuery(Guid scormContentId)
     {
         ScormPackageId = scormContentId;
     }
 }
 
-public class GetContentHrefQueryHandler : BaseHandler<ScormPackage>, IRequestHandler<GetContentHrefQuery, string>
+public class GetContentHrefQueryHandler : BaseHandler<ScormPackage>, IRequestHandler<GetScormPackageHrefQuery, string>
 {
     public GetContentHrefQueryHandler(IServiceProvider provider) : base(provider)
     {
     }
-    public async Task<string> Handle(GetContentHrefQuery request, CancellationToken cancellationToken)
+    public async Task<string> Handle(GetScormPackageHrefQuery request, CancellationToken cancellationToken)
     {
         var scormContent = await Context.ScormPackages.FirstOrDefaultAsync(x => x.Id == request.ScormPackageId, cancellationToken);
         return scormContent?.IndexPath ?? "";
