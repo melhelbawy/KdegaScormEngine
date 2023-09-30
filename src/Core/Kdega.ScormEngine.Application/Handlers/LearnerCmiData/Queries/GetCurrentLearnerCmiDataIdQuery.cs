@@ -12,9 +12,9 @@ public class GetCurrentLearnerCmiDataIdQuery : IRequest<string>
     public Guid ScormPackageId { get; set; }
 }
 
-public class GetCurrentLearnerCmiCoreIdQueryHandler : BaseHandler<CmiData>, IRequestHandler<GetCurrentLearnerCmiDataIdQuery, string>
+public class GetCurrentLearnerCmiDataIdQueryHandler : BaseHandler<CmiData>, IRequestHandler<GetCurrentLearnerCmiDataIdQuery, string>
 {
-    public GetCurrentLearnerCmiCoreIdQueryHandler(IServiceProvider provider) : base(provider)
+    public GetCurrentLearnerCmiDataIdQueryHandler(IServiceProvider provider) : base(provider)
     {
     }
 

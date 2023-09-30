@@ -6,7 +6,7 @@ namespace Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
 public class IsLearnerJoinedPackageQuery : IRequest<bool>
 {
     public Guid ScormPackageId { get; set; }
-    public string LearnerId { get; set; }
+    public string LearnerId { get; set; } = null!;
 }
 
 public class IsLearnerJoinedPackageQueryHandler : BaseHandler<LearnerScormPackage>, IRequestHandler<IsLearnerJoinedPackageQuery, bool>
@@ -20,7 +20,6 @@ public class IsLearnerJoinedPackageQueryHandler : BaseHandler<LearnerScormPackag
 
         return await Context.LearnerScormPackages
             .AnyAsync(x => x.LearnerId == request.LearnerId
-                           && x.ScormPackageId == request.ScormPackageId
-                , cancellationToken);
+                           && x.ScormPackageId == request.ScormPackageId, cancellationToken);
     }
 }

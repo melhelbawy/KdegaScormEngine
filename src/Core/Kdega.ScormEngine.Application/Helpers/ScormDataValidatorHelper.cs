@@ -1,6 +1,7 @@
 ﻿using Kdega.ScormEngine.Application.Behavior;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using static System.Decimal;
 using static System.Text.RegularExpressions.Regex;
 
@@ -248,4 +249,182 @@ public class ScormDataValidatorHelper
         return sNew.ToString();
     }
 
+
+    #region SCORM Api Keys Validations
+    /// <summary>
+    /// List of scorm Api vocabularies
+    /// </summary>
+    private static readonly string[,] _vocabulary = {
+        {"mode","normal"},
+        {"mode","review"},
+        {"mode","browse"},
+        {"status","passed"},
+        {"status","completed"},
+        {"status","failed"},
+        {"status","incomplete"},
+        {"status","browsed"},
+        {"status","not attempted"},
+        {"exit","time-out"},
+        {"exit","suspend"},
+        {"exit","logout"},
+        {"exit",""},
+        {"credit","no-credit"},
+        {"credit","credit"},
+        {"entry","ab-initio"},
+        {"entry","resume"},
+        {"entry",""},
+        {"interaction","true-false"},
+        {"interaction","choice"},
+        {"interaction","fill-in"},
+        {"interaction","matching"},
+        {"interaction","performance"},
+        {"interaction","likert"},
+        {"interaction","sequencing"},
+        {"interaction","numeric"},
+        {"result","correct"},
+        {"result","wrong"},
+        {"result","unanticipated"},
+        {"result","neutral"},
+        {"time_limit_action","exit,message"},
+        {"time_limit_action","exit,no message"},
+        {"time_limit_action","continue,message"},
+        {"time_limit_action","continue,no message"},
+        {"success_status","passed"},
+        {"success_status","failed"},
+        {"success_status","unknown"},
+        {"completion_status","completed"},
+        {"completion_status","incomplete"},
+        {"completion_status","unknown"}
+    };
+
+    /// <summary>
+    /// Check to see if the vocabulary type Is valid (note, these are case-sensitive. The spec doesn't say thIs
+    /// explicitly but the test suite fails if you give "Passed" instead of "passed".
+    /// </summary>
+    /// <param name="vocabularyType"></param>
+    /// <param name="dataValue"></param>
+    /// <returns></returns>
+    public static bool IsCmiVocabulary(string vocabularyType, string dataValue)
+    {
+        for (var i = 0; i < _vocabulary.GetLength(0); i++)
+        {
+            if (_vocabulary[i, 0] != vocabularyType) continue;
+            if (_vocabulary[i, 1] == dataValue) return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Validate if is interaction Pattern valid
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="dataValue"></param>
+    /// <returns></returns>
+    public static bool IsInteractionPatternValid(string type, string dataValue)
+    {
+        dataValue = dataValue.ToLower();
+        switch (type)
+        {
+            case "true-false":
+                var s = dataValue[..1].ToLower();
+                return s is "0" or "1" or "t" or "f";
+            case "choice":
+                // TODO - I need a regular expression to validate thIs
+                return true;
+            case "fill-in":
+                return dataValue.Length <= 255;
+            case "numeric":
+                return IsCmiDecimal(dataValue);
+            case "likert":
+                return dataValue.Trim() == "" || Regex.IsMatch(dataValue, @"\w"); // alphanumeric only
+            case "matching":
+                // TODO - I need a regular expression to validate thIs
+                return true;
+            case "performance":
+                return dataValue.Length <= 255;
+            case "sequencing":
+                // TODO - I need a regular expression to validate thIs
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /// <summary>
+    /// The "result" field in the cmi.interactions.n.result "SetValue" call
+    /// Is either a valid vocabulary OR a valid Decimal
+    /// </summary>
+    /// <param name="dataValue"></param>
+    /// <returns></returns>
+    public static bool IsResultValid(string dataValue) =>
+        IsCmiVocabulary("result", dataValue) || IsCmiDecimal(dataValue);
+
+    private static readonly string[] ReadOnlyCalls = {    "cmi.core.student_id",
+                                             "cmi.core.student_name",
+                                             "cmi.core.credit",
+                                             "cmi.core.entry",
+                                             "cmi.core.total_time",
+                                             "cmi.core.lesson_mode",
+                                             "cmi.launch_data",
+                                             "cmi.comments_from_lms",
+                                             "cmi.student_data.mastery_score",
+                                             "cmi.student_data.max_time_allowed",
+                                             "cmi.student_data.time_limit_action",
+                                             "cmi.interactions._count"
+                                         };
+    private static readonly string[] WriteOnlyCalls = {  "cmi.core.session_time",
+                                              "cmi.core.exit",
+                                            "pattern",
+                                            "id",
+                                            "time",
+                                            "type",
+                                            "weighting",
+                                            "student_response",
+                                            "result",
+                                            "latency"
+
+                                         };
+    private static readonly string[] KeywordCalls = {"cmi.core._children",
+                                             "cmi.core.score._children",
+                                             "cmi.objectives._children",
+                                             "cmi.objectives._count",
+                                             "cmi.student_data._children",
+                                             "cmi.student_preference._children",
+                                             "cmi.interactions._children",
+                                             "cmi.interactions._count,"
+
+                                         };
+
+
+    /// <summary>
+    /// Provides a fast check to see if the dataValue they passed to LMSSetValue Is ReadOnly
+    /// if so we are supposed to return an error
+    /// </summary>
+    /// <param name="dataValue"></param>
+    /// <returns></returns>
+    public static bool IsReadOnly(string dataValue) =>
+        ReadOnlyCalls.Any(t => string.Equals(t, dataValue,
+            StringComparison.CurrentCultureIgnoreCase));
+
+    /// <summary>
+    /// Provides a fast check to see if the dataValue they passed to LMSSetValue Is a keyword
+    /// if so we are supposed to return an error
+    /// </summary>
+    /// <param name="dataValue"></param>
+    /// <returns></returns>
+    public static bool IsKeyword(string dataValue) =>
+        KeywordCalls.Any(t => string.Equals(t.ToLower(), dataValue.ToLower(),
+            StringComparison.CurrentCultureIgnoreCase));
+
+    /// <summary>
+    /// Provides a fast check to see if the dataValue they passed to LMSGetValue Is WriteOnly
+    /// if so we are supposed to return an error
+    /// </summary>
+    /// <param name="dataValue"></param>
+    /// <returns></returns>
+    public static bool IsWriteOnly(string dataValue) =>
+        WriteOnlyCalls.Any(t => string.Equals(t.ToLower(), dataValue.ToLower(),
+            StringComparison.InvariantCultureIgnoreCase));
+
+    #endregion
 }

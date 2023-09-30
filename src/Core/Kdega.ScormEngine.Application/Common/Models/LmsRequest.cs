@@ -14,7 +14,7 @@ public class LmsRequest
     [JsonProperty("learner_id")]
     public string? LearnerId { get; set; }
     [JsonProperty("core_id")]
-    public string? CoreId { get; set; }
+    public string CoreId { get; set; } = null!;
     /// <summary>
     /// Identifier for the SCO (from the manifest, not guaranteed to be unique)
     /// </summary>
