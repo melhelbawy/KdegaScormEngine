@@ -20,11 +20,12 @@ public class SetValueCommand : IRequest<LmsRequest>
 
 public class SetValueCommandHandler : BaseHandler<CmiCore>, IRequestHandler<SetValueCommand, LmsRequest>
 {
-    private readonly IScormApiHandler _handler;
+    private readonly IScormMediator _scormMediator;
+
 
     public SetValueCommandHandler(IServiceProvider provider) : base(provider)
     {
-        _handler = provider.GetCustomRequiredService<IScormApiHandler>();
+        _scormMediator = provider.GetCustomRequiredService<IScormMediator>();
     }
 
     public async Task<LmsRequest> Handle(SetValueCommand request, CancellationToken cancellationToken)
@@ -32,6 +33,8 @@ public class SetValueCommandHandler : BaseHandler<CmiCore>, IRequestHandler<SetV
         request.Request.ErrorCode = "0";
         request.Request.ReturnValue = "true";
         request.Request.ErrorString = string.Empty;
+
+
 
         if (request.Request.DataValue!.Equals("NaN"))
             request.Request.DataValue = string.Empty;
@@ -43,7 +46,7 @@ public class SetValueCommandHandler : BaseHandler<CmiCore>, IRequestHandler<SetV
         else if (ScormDataValidatorHelper.IsKeyword(request.Request.DataItem))
             request.Request.InitCode402();
         else
-            await _handler.SetValue(request.Request.DataItem ?? throw new Exception("Value to set must not be null or empty"), request.Request);
+            await _scormMediator.Handle(request.Request.DataItem, request.Request);
 
         return request.Request;
     }

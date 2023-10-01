@@ -9,24 +9,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Commands;
 
-[ScormMediatorComponent("cmi.core.exit")]
-public class UpdateCmiCoreExitCommand : IRequest<LmsRequest>
+[ScormMediatorComponent("cmi.core.score.raw")]
+public class UpdateCmiCoreScoreRawCommand : IRequest<LmsRequest>
 {
     public LmsRequest LmsRequest { get; set; } = null!;
 }
 
-public class UpdateCmiCoreExitCommandHandler : BaseHandler<CmiCore>, IRequestHandler<UpdateCmiCoreExitCommand, LmsRequest>
+public class UpdateCmiCoreScoreRawCommandHandler : BaseHandler<CmiCore>, IRequestHandler<UpdateCmiCoreScoreRawCommand, LmsRequest>
 {
-    public UpdateCmiCoreExitCommandHandler(IServiceProvider provider) : base(provider)
+    public UpdateCmiCoreScoreRawCommandHandler(IServiceProvider provider) : base(provider)
     {
     }
 
-    public async Task<LmsRequest> Handle(UpdateCmiCoreExitCommand request, CancellationToken cancellationToken)
+    public async Task<LmsRequest> Handle(UpdateCmiCoreScoreRawCommand request, CancellationToken cancellationToken)
     {
         var cmiCore = await Context.CmiCores
             .FirstOrDefaultAsync(x => x.Id == Guid.Parse(request.LmsRequest.CoreId), cancellationToken);
 
         Check.NotNull(cmiCore, nameof(CmiCore));
+
         if (ScormDataValidatorHelper.IsCmiVocabulary("exit", request.LmsRequest.DataValue!))
         {
             cmiCore.Exit = request.LmsRequest.DataValue;
@@ -37,6 +38,4 @@ public class UpdateCmiCoreExitCommandHandler : BaseHandler<CmiCore>, IRequestHan
 
         return request.LmsRequest;
     }
-
-
 }

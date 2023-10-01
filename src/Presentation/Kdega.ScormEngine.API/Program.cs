@@ -66,7 +66,7 @@ finally
     Log.Information("Shut down complete");
     Log.CloseAndFlush();
 }
-namespace Kdega.ScormEngine.API
-{
-    public partial class Program { }
-}
+
+
+public partial class Program { }
+

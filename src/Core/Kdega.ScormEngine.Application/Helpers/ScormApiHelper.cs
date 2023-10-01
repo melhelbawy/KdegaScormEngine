@@ -19,7 +19,7 @@ public class ScormApiHelper
             {
                 "cmi.core.exit", new List<IRequest<LmsRequest>>
                 {
-                    new UpdateCmiCoreExitCommand(request)
+                    new UpdateCmiCoreExitCommand()
                 }
 
             }
