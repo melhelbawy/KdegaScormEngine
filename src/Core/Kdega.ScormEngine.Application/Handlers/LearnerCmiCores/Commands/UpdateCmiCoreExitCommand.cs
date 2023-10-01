@@ -1,5 +1,4 @@
 ﻿using Kdega.ScormEngine.Application.Attributes;
-using Kdega.ScormEngine.Application.Behavior;
 using Kdega.ScormEngine.Application.Common.Models;
 using Kdega.ScormEngine.Application.Extensions;
 using Kdega.ScormEngine.Application.Helpers;
@@ -26,10 +25,12 @@ public class UpdateCmiCoreExitCommandHandler : BaseHandler<CmiCore>, IRequestHan
         var cmiCore = await Context.CmiCores
             .FirstOrDefaultAsync(x => x.Id == Guid.Parse(request.LmsRequest.CoreId), cancellationToken);
 
-        Check.NotNull(cmiCore, nameof(CmiCore));
-        if (ScormDataValidatorHelper.IsCmiVocabulary("exit", request.LmsRequest.DataValue!))
+        if (cmiCore is null)
+            request.LmsRequest.InitCode301();
+
+        else if (ScormDataValidatorHelper.IsCmiVocabulary("exit", request.LmsRequest.DataValue!))
         {
-            cmiCore.Exit = request.LmsRequest.DataValue;
+            cmiCore!.Exit = request.LmsRequest.DataValue;
             await Context.SaveChangesAsync(cancellationToken);
         }
         else

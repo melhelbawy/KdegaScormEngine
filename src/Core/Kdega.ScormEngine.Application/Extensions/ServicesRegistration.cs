@@ -3,7 +3,6 @@ using Kdega.ScormEngine.Application.Behavior.ExceptionBehavior;
 using Kdega.ScormEngine.Application.Behavior.Logging;
 using Kdega.ScormEngine.Application.Interfaces;
 using Kdega.ScormEngine.Application.ScormModelKeyMediator;
-using Kdega.ScormEngine.Application.Services;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -13,7 +12,6 @@ public static class ServicesRegistration
 {
     public static void AddApplicationServices(this IServiceCollection services)
     {
-        //services.AddTransient<LmsRequest>();
         services.AddScoped<ExceptionMiddleware>();
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformanceBehavior<,>));
@@ -23,7 +21,6 @@ public static class ServicesRegistration
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ApplicationLayer).Assembly));
         services.AddMapster();
 
-        services.AddTransient<IScormApiHandler, ScormApiHandler>();
         services.AddTransient<IScormMediator, ScormMediator>();
     }
 }

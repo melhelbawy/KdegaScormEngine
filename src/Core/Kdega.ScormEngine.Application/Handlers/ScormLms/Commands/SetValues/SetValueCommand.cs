@@ -34,13 +34,11 @@ public class SetValueCommandHandler : BaseHandler<CmiCore>, IRequestHandler<SetV
         request.Request.ReturnValue = "true";
         request.Request.ErrorString = string.Empty;
 
-
-
         if (request.Request.DataValue!.Equals("NaN"))
             request.Request.DataValue = string.Empty;
 
         if (!await IsValidCoreId(request.Request.CoreId))
-            request.Request.InitCode403();
+            request.Request.InitCode301();
         else if (ScormDataValidatorHelper.IsReadOnly(request.Request.DataItem))
             request.Request.InitCode403();
         else if (ScormDataValidatorHelper.IsKeyword(request.Request.DataItem))
