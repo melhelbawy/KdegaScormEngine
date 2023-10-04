@@ -1,5 +1,4 @@
-﻿using Kdega.ScormEngine.Domain.Entities.ScormPackages;
-using MediatR;
+﻿using MediatR;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormLearners.Commands;
 public class SetLearnerScormPackageScoreCommand : IRequest
@@ -9,7 +8,7 @@ public class SetLearnerScormPackageScoreCommand : IRequest
     public decimal Score { get; set; }
 }
 
-public class SetLearnerScormPackageScoreCommandHandler : BaseHandler<LearnerScormPackage>, IRequestHandler<SetLearnerScormPackageScoreCommand>
+public class SetLearnerScormPackageScoreCommandHandler : BaseHandler, IRequestHandler<SetLearnerScormPackageScoreCommand>
 {
     public SetLearnerScormPackageScoreCommandHandler(IServiceProvider provider) : base(provider)
     {

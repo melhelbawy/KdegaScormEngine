@@ -1,5 +1,4 @@
 ﻿using Kdega.ScormEngine.Application.Handlers.LmsSessions.Commands;
-using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +11,7 @@ public class GetCurrentLearnerSessionIdQuery : IRequest<string>
     public string ScoIdentifier { get; set; } = null!;
 }
 
-public class GetCurrentLearnerSessionIdQueryHandler : BaseHandler<ScormSession>, IRequestHandler<GetCurrentLearnerSessionIdQuery, string>
+public class GetCurrentLearnerSessionIdQueryHandler : BaseHandler, IRequestHandler<GetCurrentLearnerSessionIdQuery, string>
 {
     public GetCurrentLearnerSessionIdQueryHandler(IServiceProvider provider) : base(provider)
     {

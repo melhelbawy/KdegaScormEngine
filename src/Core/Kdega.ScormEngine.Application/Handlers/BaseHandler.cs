@@ -5,7 +5,7 @@ using MapsterMapper;
 using MediatR;
 
 namespace Kdega.ScormEngine.Application.Handlers;
-public class BaseHandler<T> where T : class
+public class BaseHandler
 {
     protected readonly IServiceProvider Provider;
     protected readonly IMapper Mapper;

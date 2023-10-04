@@ -2,7 +2,6 @@
 using Kdega.ScormEngine.Application.Common.Models;
 using Kdega.ScormEngine.Application.Handlers.LmsSessions.Commands;
 using Kdega.ScormEngine.Application.Helpers;
-using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +18,7 @@ public class FinishCommand : IRequest<LmsRequest>
 }
 
 
-public class FinishCommandHandler : BaseHandler<CmiData>, IRequestHandler<FinishCommand, LmsRequest>
+public class FinishCommandHandler : BaseHandler, IRequestHandler<FinishCommand, LmsRequest>
 {
     public FinishCommandHandler(IServiceProvider provider) : base(provider)
     {

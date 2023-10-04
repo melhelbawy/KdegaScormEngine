@@ -14,7 +14,7 @@ public class InitializeCommand : IRequest<LmsRequest>
     public LmsRequest? Request { get; set; }
 }
 
-public class InitializeCommandHandler : BaseHandler<CmiCore>, IRequestHandler<InitializeCommand, LmsRequest>
+public class InitializeCommandHandler : BaseHandler, IRequestHandler<InitializeCommand, LmsRequest>
 {
     public InitializeCommandHandler(IServiceProvider provider) : base(provider)
     {

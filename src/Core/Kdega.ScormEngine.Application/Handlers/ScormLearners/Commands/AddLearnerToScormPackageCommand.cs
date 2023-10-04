@@ -10,7 +10,7 @@ public class AddLearnerToScormPackageCommand : IRequest<bool>
     public string ScormPackageId { get; set; } = null!;
 }
 
-public class ProcessUserScormModuleCommandHandler : BaseHandler<LearnerScormPackage>, IRequestHandler<AddLearnerToScormPackageCommand, bool>
+public class ProcessUserScormModuleCommandHandler : BaseHandler, IRequestHandler<AddLearnerToScormPackageCommand, bool>
 {
     public ProcessUserScormModuleCommandHandler(IServiceProvider provider) : base(provider)
     {

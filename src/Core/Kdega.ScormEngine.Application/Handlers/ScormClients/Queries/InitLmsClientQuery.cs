@@ -4,7 +4,6 @@ using Kdega.ScormEngine.Application.Handlers.LmsSessions.Queries;
 using Kdega.ScormEngine.Application.Handlers.ScormClients.Models;
 using Kdega.ScormEngine.Application.Handlers.ScormLearners.Queries;
 using Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
-using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormClients.Queries;
@@ -14,7 +13,7 @@ public class InitLmsClientQuery : IRequest<LmsClientDto>
     public string LearnerId { get; set; } = null!;
 }
 
-public class GetScoClientQueryHandler : BaseHandler<CmiCore>, IRequestHandler<InitLmsClientQuery, LmsClientDto>
+public class GetScoClientQueryHandler : BaseHandler, IRequestHandler<InitLmsClientQuery, LmsClientDto>
 {
     public GetScoClientQueryHandler(IServiceProvider provider) : base(provider)
     {

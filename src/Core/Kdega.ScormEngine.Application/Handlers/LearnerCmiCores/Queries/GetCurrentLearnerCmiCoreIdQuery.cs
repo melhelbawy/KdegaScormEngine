@@ -1,5 +1,4 @@
 ﻿using Kdega.ScormEngine.Application.Behavior;
-using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,7 +14,7 @@ public class GetCurrentLearnerCmiCoreIdQuery : IRequest<string>
     }
 }
 
-public class GetCurrentLearnerCmiCoreIdQueryHandler : BaseHandler<CmiCore>, IRequestHandler<GetCurrentLearnerCmiCoreIdQuery, string>
+public class GetCurrentLearnerCmiCoreIdQueryHandler : BaseHandler, IRequestHandler<GetCurrentLearnerCmiCoreIdQuery, string>
 {
     public GetCurrentLearnerCmiCoreIdQueryHandler(IServiceProvider provider) : base(provider)
     {

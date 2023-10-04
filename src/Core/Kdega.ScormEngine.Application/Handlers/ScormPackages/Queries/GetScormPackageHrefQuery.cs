@@ -1,5 +1,4 @@
-﻿using Kdega.ScormEngine.Domain.Entities.ScormPackages;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
@@ -13,7 +12,7 @@ public class GetScormPackageHrefQuery : IRequest<string>
     }
 }
 
-public class GetContentHrefQueryHandler : BaseHandler<ScormPackage>, IRequestHandler<GetScormPackageHrefQuery, string>
+public class GetContentHrefQueryHandler : BaseHandler, IRequestHandler<GetScormPackageHrefQuery, string>
 {
     public GetContentHrefQueryHandler(IServiceProvider provider) : base(provider)
     {

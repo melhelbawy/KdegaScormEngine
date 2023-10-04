@@ -1,5 +1,4 @@
 ﻿using Kdega.ScormEngine.Application.Handlers.ScormLearners.Models;
-using Kdega.ScormEngine.Domain.Entities.ScormPackages;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +10,7 @@ public class GetCurrentLearnerScormPackages : IRequest<List<LearnerScormPackageD
 
 }
 
-public class GetCurrentLearnerScormPackagesHandler : BaseHandler<LearnerScormPackage>, IRequestHandler<GetCurrentLearnerScormPackages,
+public class GetCurrentLearnerScormPackagesHandler : BaseHandler, IRequestHandler<GetCurrentLearnerScormPackages,
         List<LearnerScormPackageDto>>
 {
     public GetCurrentLearnerScormPackagesHandler(IServiceProvider provider) : base(provider)

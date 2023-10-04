@@ -14,7 +14,7 @@ public class GetScormPackageVersionQuery : IRequest<string>
     }
 }
 
-public class GetScormPackageVersionQueryHandler : BaseHandler<ScormPackage>, IRequestHandler<GetScormPackageVersionQuery, string>
+public class GetScormPackageVersionQueryHandler : BaseHandler, IRequestHandler<GetScormPackageVersionQuery, string>
 {
     public GetScormPackageVersionQueryHandler(IServiceProvider provider) : base(provider)
     {

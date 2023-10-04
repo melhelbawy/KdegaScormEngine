@@ -1,5 +1,4 @@
-﻿using Kdega.ScormEngine.Domain.Entities.ScormPackages;
-using MediatR;
+﻿using MediatR;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormLearners.Commands;
 public class SetLearnerScormPackageLastOpenedCommand : IRequest
@@ -8,7 +7,7 @@ public class SetLearnerScormPackageLastOpenedCommand : IRequest
     public string ScormPackageId { get; set; } = null!;
 }
 
-public class SetLearnerScormPackageLastOpenedCommandHandler : BaseHandler<LearnerScormPackage>, IRequestHandler<SetLearnerScormPackageLastOpenedCommand>
+public class SetLearnerScormPackageLastOpenedCommandHandler : BaseHandler, IRequestHandler<SetLearnerScormPackageLastOpenedCommand>
 {
     public SetLearnerScormPackageLastOpenedCommandHandler(IServiceProvider provider) : base(provider)
     {

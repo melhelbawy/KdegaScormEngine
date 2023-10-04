@@ -14,11 +14,11 @@ public class ScormMediator : IScormMediator
 
     public ScormMediator(IServiceProvider serviceProvider)
     {
+        _components = new Dictionary<string, List<object>>();
         _serviceProvider = serviceProvider;
         _mediator = serviceProvider.GetCustomRequiredService<IMediator>();
-        _components = new Dictionary<string, List<object>>();
 
-        Register();
+        Register().Wait();
     }
 
     public async Task Handle<T>(string keyName, T request)
@@ -34,12 +34,11 @@ public class ScormMediator : IScormMediator
 
     public Task Register()
     {
+        var assembly = Assembly.GetExecutingAssembly();
+        var componentTypes = assembly.GetTypes()
+            .Where(t => t.GetCustomAttributes(typeof(ScormMediatorComponentAttribute), false).Any());
         return Task.Run(() =>
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var componentTypes = assembly.GetTypes()
-                .Where(t => t.GetCustomAttributes(typeof(ScormMediatorComponentAttribute), false).Any());
-
             foreach (var componentType in componentTypes)
             {
                 var attribute = (ScormMediatorComponentAttribute)componentType

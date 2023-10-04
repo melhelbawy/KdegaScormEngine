@@ -1,5 +1,4 @@
 ﻿using Kdega.ScormEngine.Application.Behavior;
-using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +9,7 @@ public class EndCurrentLearnerSessionCommand : IRequest<bool>
     public string LearnerId { get; set; } = null!;
 }
 
-public class EndCurrentLearnerSessionCommandHandler : BaseHandler<ScormSession>, IRequestHandler<EndCurrentLearnerSessionCommand, bool>
+public class EndCurrentLearnerSessionCommandHandler : BaseHandler, IRequestHandler<EndCurrentLearnerSessionCommand, bool>
 {
     public EndCurrentLearnerSessionCommandHandler(IServiceProvider provider) : base(provider)
     {

@@ -11,7 +11,7 @@ public class UploadScormPackageCommand : IRequest<bool>
     public IFormFile ScormPackage { get; set; } = null!;
 }
 
-public class UploadScormPackageCommandHandler : BaseHandler<ScormPackage>, IRequestHandler<UploadScormPackageCommand, bool>
+public class UploadScormPackageCommandHandler : BaseHandler, IRequestHandler<UploadScormPackageCommand, bool>
 {
     private readonly IObjectManager _objectManager;
     private readonly IMediator _mediator;

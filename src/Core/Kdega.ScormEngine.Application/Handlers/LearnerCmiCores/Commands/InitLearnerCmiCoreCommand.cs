@@ -1,4 +1,4 @@
-﻿using Kdega.ScormEngine.Application.Constants;
+﻿using Kdega.ScormEngine.Domain.Constants.ScormLms;
 using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
 
@@ -9,7 +9,7 @@ public class InitLearnerCmiCoreCommand : IRequest<string>
     public Guid LearnerId { get; set; }
 }
 
-public class InitLearnerCmiCoreCommandHandler : BaseHandler<CmiCore>, IRequestHandler<InitLearnerCmiCoreCommand, string>
+public class InitLearnerCmiCoreCommandHandler : BaseHandler, IRequestHandler<InitLearnerCmiCoreCommand, string>
 {
     public InitLearnerCmiCoreCommandHandler(IServiceProvider provider) : base(provider)
     {

@@ -10,7 +10,7 @@ public class InitLearnerSessionCommand : IRequest<string>
     public string ScoIdentifier { get; set; } = "default";
 }
 
-public class InitLearnerSessionCommandHandler : BaseHandler<ScormSession>, IRequestHandler<InitLearnerSessionCommand, string>
+public class InitLearnerSessionCommandHandler : BaseHandler, IRequestHandler<InitLearnerSessionCommand, string>
 {
     public InitLearnerSessionCommandHandler(IServiceProvider provider) : base(provider)
     {

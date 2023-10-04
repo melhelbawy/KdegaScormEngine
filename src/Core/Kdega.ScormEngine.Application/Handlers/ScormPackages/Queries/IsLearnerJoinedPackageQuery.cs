@@ -1,5 +1,4 @@
-﻿using Kdega.ScormEngine.Domain.Entities.ScormPackages;
-using MediatR;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
@@ -9,7 +8,7 @@ public class IsLearnerJoinedPackageQuery : IRequest<bool>
     public string LearnerId { get; set; } = null!;
 }
 
-public class IsLearnerJoinedPackageQueryHandler : BaseHandler<LearnerScormPackage>, IRequestHandler<IsLearnerJoinedPackageQuery, bool>
+public class IsLearnerJoinedPackageQueryHandler : BaseHandler, IRequestHandler<IsLearnerJoinedPackageQuery, bool>
 {
     public IsLearnerJoinedPackageQueryHandler(IServiceProvider provider) : base(provider)
     {

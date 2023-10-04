@@ -1,5 +1,4 @@
-﻿using Kdega.ScormEngine.Domain.Entities.ScormPackages;
-using MediatR;
+﻿using MediatR;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormLearners.Commands;
 public class SetLearnerScormPackageCompleteDateCommand : IRequest
@@ -9,7 +8,7 @@ public class SetLearnerScormPackageCompleteDateCommand : IRequest
     public DateTime CompleteDate { get; set; }
 }
 
-public class SetLearnerScormPackageCompleteDateCommandHandler : BaseHandler<LearnerScormPackage>, IRequestHandler<SetLearnerScormPackageCompleteDateCommand>
+public class SetLearnerScormPackageCompleteDateCommandHandler : BaseHandler, IRequestHandler<SetLearnerScormPackageCompleteDateCommand>
 {
     public SetLearnerScormPackageCompleteDateCommandHandler(IServiceProvider provider) : base(provider)
     {

@@ -1,5 +1,4 @@
 ﻿using Kdega.ScormEngine.Application.Behavior;
-using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
 
 namespace Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Commands;
@@ -11,7 +10,7 @@ public class UpdateLearnerCmiCoreCommand : IRequest
     public string TotalTime { get; set; } = null!;
 }
 
-public class UpdateLearnerCmiCoreCommandHandler : BaseHandler<CmiCore>, IRequestHandler<UpdateLearnerCmiCoreCommand>
+public class UpdateLearnerCmiCoreCommandHandler : BaseHandler, IRequestHandler<UpdateLearnerCmiCoreCommand>
 {
     public UpdateLearnerCmiCoreCommandHandler(IServiceProvider provider) : base(provider)
     {

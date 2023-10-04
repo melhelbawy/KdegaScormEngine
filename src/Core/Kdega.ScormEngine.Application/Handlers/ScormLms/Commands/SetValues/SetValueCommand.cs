@@ -2,7 +2,6 @@
 using Kdega.ScormEngine.Application.Extensions;
 using Kdega.ScormEngine.Application.Helpers;
 using Kdega.ScormEngine.Application.Interfaces;
-using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +17,7 @@ public class SetValueCommand : IRequest<LmsRequest>
     public LmsRequest Request { get; set; }
 }
 
-public class SetValueCommandHandler : BaseHandler<CmiCore>, IRequestHandler<SetValueCommand, LmsRequest>
+public class SetValueCommandHandler : BaseHandler, IRequestHandler<SetValueCommand, LmsRequest>
 {
     private readonly IScormMediator _scormMediator;
 
@@ -36,6 +35,8 @@ public class SetValueCommandHandler : BaseHandler<CmiCore>, IRequestHandler<SetV
 
         if (request.Request.DataValue!.Equals("NaN"))
             request.Request.DataValue = string.Empty;
+
+        await _scormMediator.Handle(request.Request.DataItem, request.Request);
 
         if (!await IsValidCoreId(request.Request.CoreId))
             request.Request.InitCode301();

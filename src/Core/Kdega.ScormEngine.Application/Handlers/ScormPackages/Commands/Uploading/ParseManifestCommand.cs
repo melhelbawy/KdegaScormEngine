@@ -11,7 +11,7 @@ public class ParseManifestCommand : IRequest<ScormPackageManifestDto>
     public Guid ScormPackageId { get; set; }
     public string PathToManifest { get; set; } = null!;
 }
-public class ParseManifestCommandHandler : BaseHandler<ScormPackage>, IRequestHandler<ParseManifestCommand, ScormPackageManifestDto>
+public class ParseManifestCommandHandler : BaseHandler, IRequestHandler<ParseManifestCommand, ScormPackageManifestDto>
 {
     public ParseManifestCommandHandler(IServiceProvider provider) : base(provider)
     {

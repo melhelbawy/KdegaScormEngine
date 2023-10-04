@@ -15,7 +15,7 @@ public class CreateLearnerCmiDataCommand : IRequest
     public decimal? MasteryScore { get; set; }
 }
 
-public class CreateLearnerCmiDataCommandHandler : BaseHandler<CmiData>, IRequestHandler<CreateLearnerCmiDataCommand>
+public class CreateLearnerCmiDataCommandHandler : BaseHandler, IRequestHandler<CreateLearnerCmiDataCommand>
 {
     public CreateLearnerCmiDataCommandHandler(IServiceProvider provider) : base(provider)
     {
