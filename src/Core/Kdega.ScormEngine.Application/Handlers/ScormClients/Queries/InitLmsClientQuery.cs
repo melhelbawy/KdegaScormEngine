@@ -22,7 +22,7 @@ public class GetScoClientQueryHandler : BaseHandler, IRequestHandler<InitLmsClie
     public async Task<LmsClientDto> Handle(InitLmsClientQuery request, CancellationToken cancellationToken)
     {
         var coreId =
-            await Mediator.Send(new GetCurrentLearnerCmiCoreIdQuery(Guid.Parse(request.ScormLearnerPackageId)),
+            await Mediator.Send(new GetCurrentLearnerCmiCoreIdQuery(request.ScormLearnerPackageId),
                 cancellationToken);
 
         var response = new LmsClientDto
@@ -39,7 +39,7 @@ public class GetScoClientQueryHandler : BaseHandler, IRequestHandler<InitLmsClie
             ScormLearnerPackageId = await Mediator.Send(new GetCurrentLearnerPackageIdQuery()
             {
                 LearnerId = request.LearnerId,
-                ScormContentId = request.ScormLearnerPackageId
+                ScormPackageId = request.ScormLearnerPackageId
             }, cancellationToken),
             ScoAddress = await Mediator.Send(new GetScormPackageHrefQuery(Guid.Parse(request.ScormLearnerPackageId)), cancellationToken)
         };

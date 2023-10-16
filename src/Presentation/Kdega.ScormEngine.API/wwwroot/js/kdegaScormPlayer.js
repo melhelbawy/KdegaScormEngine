@@ -10,12 +10,13 @@ API.version = '1.2';
 var API_1484_11 = new ApiClass();
 API_1484_11.version = '1.3';
 var sessionId;
-var userid;
+var learnerId;
 var coreId;
-var scorm_content_id;
+var learnerPackageId;
+var scorm_package_id;
 var sco_identifier;
 var exit_status;
-var scormApis = "/course-management";
+var scormApis = "api/v1/scormplayer";
 
 /****************************************************************************************
 ****************************************************************************************/
@@ -47,7 +48,8 @@ function ApiClass() {
     this._sessionid = "";
     this._userid = "";
     this._coreid = "";
-    this._scorm_content_id = "";
+    this._learnerPackageId = "";
+    this._scorm_package_id = "";
     this._sco_identifier = "";
     this._exit_status = ""; // this will stay as is in browse or review mode, will change if they are actually taking the sco for credit to completed. Will only request the next page if this is "completed"
 
@@ -112,28 +114,29 @@ function ApiClass() {
             return "false";
         }
         // the calling application leaves a session id and other variables 
-        this._sessionid = SCOClient.sessionid;
-        this._userid = SCOClient.userid;
-        this._coreid = SCOClient.coreid;
-        this._scorm_content_id = SCOClient.scorm_content_id;
-        this._sco_identifier = SCOClient.sco_identifier;
+        this._sessionid = lmsClient.sessionId;
+        this._learnerPackageId = lmsClient.learnerPackageId;
+        this._userid = lmsClient.learnerId;
+        this._coreid = lmsClient.coreId;
+        this._scorm_package_id = lmsClient.scorm_package_id;
+        this._sco_identifier = lmsClient.sco_identifier;
         // LMSInfo object carries arguments to the server and back
-        var lmsInfo = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._scorm_content_id, this._sco_identifier));
-        WriteToDebug("LMSInitialize: " + lmsInfo);
+        var lmsRequest = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier));
+        WriteToDebug("LMSInitialize: " + lmsRequest);
         var that = this; // get reference to current API instance
         $.ajax({
             type: "POST",
-            url: `${scormApis}/scorms/lms-initialize`,
-            data: lmsInfo,
+            url: `${scormApis}/lms-initialize`,
+            data: lmsRequest,
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function (response) {
-                lmsInfo = response;
-                that.LastError = lmsInfo.errorCode;
-                that.LastErrorString = lmsInfo.errorString
+                lmsRequest = response.value;
+                that.LastError = lmsRequest.errorCode;
+                that.LastErrorString = lmsRequest.errorString
                 // check error code from server
-                if (lmsInfo.errorCode != "0") {
+                if (lmsRequest.errorCode != "0") {
                     that.initialized = false;
                 }
                 else {
@@ -180,13 +183,13 @@ function ApiClass() {
             return "false";
         }
         // LMSInfo object carries arguments to the server and back
-        var lmsInfo = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._scorm_content_id, this._sco_identifier));
-        WriteToDebug("LMSFinish: " + JSON.stringify({ 'lmsInfo': lmsInfo }));
+        var lmsRequest = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier));
+        WriteToDebug("LMSFinish: " + JSON.stringify({ 'lmsRequest': lmsRequest }));
         var that = this; // get reference to current instance
         $.ajax({
             type: "POST",
-            url: `${scormApis}/scorms/lms-finish`,
-            data: lmsInfo,
+            url: `${scormApis}/lms-finish`,
+            data: lmsRequest,
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             async: true,
@@ -204,9 +207,9 @@ function ApiClass() {
 
         // AJAX callback for the LMSFinish call
         function LMSFinish_callback(response) {
-            lmsInfo = response.d == null ? response : response.d; // asp.net 3.5 adds the 'd' attribute to the response object
-            that.LastError = lmsInfo.errorCode;
-            that.LastErrorString = lmsInfo.errorString
+            lmsRequest = response.value.d == null ? response.value : response.value.d; // asp.net 3.5 adds the 'd' attribute to the response object
+            that.LastError = lmsRequest.errorCode;
+            that.LastErrorString = lmsRequest.errorString
             that.LastError = "101";
             that.LastErrorString = "";
             that.initialized = false;
@@ -235,29 +238,29 @@ function ApiClass() {
             this.LastErrorDiagnostic = "Error from API";
             return "";
         }
-        var lmsInfo = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._scorm_content_id, this._sco_identifier, name));
-        WriteToDebug("GETVALUE: " + JSON.stringify({ 'lmsInfo': lmsInfo }));
+        var lmsRequest = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier, name));
+        WriteToDebug("GETVALUE: " + JSON.stringify({ 'lmsRequest': lmsRequest }));
 
         var returnValue = '';
         var that = this; // get reference to current API instance
         $.ajax({
-            type: "POST",
-            url: `${scormApis}/scorms/lms-get-value`,
-            data: lmsInfo,
+            type: "GET",
+            url: `${scormApis}/lms-get-value`,
+            data: lmsRequest,
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function (response) {
-                lmsInfo = response;
-                that.LastError = lmsInfo.errorCode;
-                that.LastErrorString = lmsInfo.errorString;
+                lmsRequest = response.value;
+                that.LastError = lmsRequest.errorCode;
+                that.LastErrorString = lmsRequest.errorString;
                 // check error code from server
-                if (lmsInfo.errorCode != "0") {
+                if (lmsRequest.errorCode != "0") {
                     return "false";
                 }
                 else {
-                    returnValue = lmsInfo.returnValue;
-                    return lmsInfo.returnValue;
+                    returnValue = lmsRequest.returnValue;
+                    return lmsRequest.returnValue;
 
                 }
             },
@@ -298,29 +301,29 @@ function ApiClass() {
             this.LastErrorDiagnostic = "Error from API";
             return "false";
         }
-        var lmsInfo = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._scorm_content_id, this._sco_identifier, name, value));
-        WriteToDebug("SETVALUE: " + JSON.stringify({ 'lmsInfo': lmsInfo }));
+        var lmsRequest = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier, name, value));
+        WriteToDebug("SETVALUE: " + JSON.stringify({ 'lmsRequest': lmsRequest }));
         var returnValue = '';
         var that = this; // get reference to current API instance
         $.ajax({
-            type: "POST",
-            url: `${scormApis}/scorms/lms-set-value`,
-            data: lmsInfo,
+            type: "PUT",
+            url: `${scormApis}/lms-set-value`,
+            data: lmsRequest,
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             async: false,
             success: function (response) {
-                lmsInfo = response;
-                that.LastError = lmsInfo.errorCode;
-                that.LastErrorString = lmsInfo.errorString
+                lmsRequest = response.value;
+                that.LastError = lmsRequest.errorCode;
+                that.LastErrorString = lmsRequest.errorString
                 // check error code from server
-                if (lmsInfo.errorCode != "0") {
+                if (lmsRequest.errorCode != "0") {
                     returnValue = "false;"
                     return "false";
                 }
                 else {
-                    returnValue = lmsInfo.ReturnValue;
-                    return lmsInfo.ReturnValue;
+                    returnValue = lmsRequest.ReturnValue;
+                    return lmsRequest.ReturnValue;
                 }
             },
             error: function (request, error) {
@@ -409,25 +412,28 @@ function ApiClass() {
 ** returns an LMSInfo object for data transfer to and from the server
  * 
 *********************************************************************************/
-function createLMSInfo(Sessionid, user_id, core_id, SCORM_content_id, SCO_identifier, DataItem, DataValue, ErrorCode, ErrorString, ErrorDiagnostic, ReturnValue) {
-    var o = new Object();
-    o.sessionId = Sessionid;
-    o.userId = user_id;
-    o.coreId = core_id;
-    o.scoIdentifier = SCO_identifier;
-    o.scormContentId = SCORM_content_id;
-    o.dataItem = DataItem;
-    o.dataValue = DataValue;
-    o.errorCode = ErrorCode;
-    o.errorString = ErrorString;
-    o.errorDiagnostic = ErrorDiagnostic;
-    o.returnValue = ReturnValue;
-    for (prop in o) {
-        if (o[prop] == null) {
-            o[prop] = "null";
+function createLMSInfo(sessionId, learnerId, coreId, learnerPackageId, scormPackageId, scoIdentifier, dataItem, dataValue, errorCode, errorString, errorDiagnostic, returnValue) {
+    const lmsRequest = new Object();
+    lmsRequest.sessionId = sessionId;
+    lmsRequest.LearnerId = learnerId;
+    lmsRequest.coreId = coreId;
+    lmsRequest.scoIdentifier = scoIdentifier;
+    lmsRequest.scorm_package_id = scormPackageId;
+    lmsRequest.LearnerScormPackageId = learnerPackageId;
+    lmsRequest.dataItem = dataItem;
+    lmsRequest.dataValue = dataValue;
+    lmsRequest.errorCode = errorCode;
+    lmsRequest.errorString = errorString;
+    lmsRequest.errorDiagnostic = errorDiagnostic;
+    lmsRequest.returnValue = returnValue;
+    for (let prop in lmsRequest) {
+        if (Object.prototype.hasOwnProperty.call(lmsRequest, prop)) {
+            if (lmsRequest[prop] == null) {
+                lmsRequest[prop] = "null";
+            }
         }
     }
-    return o;
+    return lmsRequest;
 }
 /*********************************************************************************
 **

@@ -30,7 +30,7 @@ public class InitializeCommandHandler : BaseHandler, IRequestHandler<InitializeC
             return request.Request;
         }
 
-        var cmiCoreId = await Mediator.Send(new GetCurrentLearnerCmiCoreIdQuery(Guid.Parse(request.Request.LearnerScormPackageId!))
+        var cmiCoreId = await Mediator.Send(new GetCurrentLearnerCmiCoreIdQuery(request.Request.LearnerScormPackageId!)
             , cancellationToken);
 
         if (string.IsNullOrEmpty(cmiCoreId))
@@ -39,7 +39,6 @@ public class InitializeCommandHandler : BaseHandler, IRequestHandler<InitializeC
             {
                 LearnerId = request.Request.LearnerId,
                 ScoIdentifier = request.Request.ScoIdentifier,
-                ScormContentId = Guid.Parse(request.Request.LearnerScormPackageId!),
                 LaunchData = string.Empty,
                 MaxTimeAllowed = string.Empty,
                 TimeLimitAction = string.Empty,

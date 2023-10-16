@@ -1,5 +1,4 @@
 ﻿using Kdega.ScormEngine.Domain.Entities.Base;
-using Kdega.ScormEngine.Domain.Entities.ScormPackages;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 
@@ -52,10 +51,6 @@ public class CmiData : AuditableEntity
     [JsonProperty("sco_identifier")]
     public string? ScoIdentifier { get; set; }
 
-    [JsonProperty("Scorm_Package_id ")]
-    public Guid ScormContentId { get; set; }
-
-    public ScormPackage ScormPackage { get; set; } = null!;
 
     [JsonProperty("cmi_core_id")]
     public Guid CmiCoreId { get; set; }

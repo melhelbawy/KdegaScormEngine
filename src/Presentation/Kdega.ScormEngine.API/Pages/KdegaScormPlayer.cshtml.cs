@@ -2,6 +2,7 @@ using Kdega.ScormEngine.Application.Constants;
 using Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Queries;
 using Kdega.ScormEngine.Application.Handlers.LmsSessions.Commands;
 using Kdega.ScormEngine.Application.Handlers.ScormClients.Models;
+using Kdega.ScormEngine.Application.Handlers.ScormLearners.Queries;
 using Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -28,11 +29,17 @@ public class KdegaScormPlayerModel : PageModel
     {
         if (string.IsNullOrEmpty(Request.Query["path"]))
             throw new ArgumentException("you must provide Scorm Index file path");
+        var lmsIndex = Uri.EscapeDataString(Request.Query["path"]);
 
         LearnerId = Request.Query["learnerId"]!;
+        ScormPackageId = Request.Query["packageId"]!;
+
+        ScormLearnerPackageId = GetLearnerPackageId(ScormPackageId);
+
         var scoLaunch = GetCourseInformation(LearnerId);
         LaunchParameters = SetupJavaScript(scoLaunch);
-        var stream = _mediator.Send(new GetScormPackageStreamQuery { Path = Request.Query["path"]! });
+        IFrameSrc = $"api/v1/scormpackages/files/{lmsIndex}";
+
     }
     private string SetupJavaScript(LmsClientDto scoLaunch)
     {
@@ -45,21 +52,21 @@ public class KdegaScormPlayerModel : PageModel
                           lmsClient.scorm_package_id = '{scoLaunch.ScormPackageId}';
                           lmsClient.scoAddress = '{scoLaunch.ScoAddress}';
                           lmsClient.scoFrameClientID = '{LmsClient.ScoFrameClientId}';
-                          lmsClient.divDebugID = '{LmsClient.BDebug}';
+                          lmsClient.divDebugID = '{LmsClient.DivDebug}';
                           lmsClient.bDebug = {LmsClient.BDebug};
                           lmsClient.DateCreated = '{DateTime.Today}'; ";
 
     }
 
-    private LmsClientDto GetCourseInformation(string userId)
+    private LmsClientDto GetCourseInformation(string learnerId)
     {
         var scoLaunch = new LmsClientDto
         {
             ScormPackageId = ScormPackageId,
-            LearnerId = userId,
-            ScoAddress = ""
+            LearnerId = learnerId,
         };
 
+        scoLaunch.ScoAddress = _mediator.Send(new GetScormPackageHrefQuery(Guid.Parse(ScormPackageId!)), CancellationToken.None).Result;
 
         var coreId = GetPackageLearnerScoCoreId();
         scoLaunch.CoreId = coreId;
@@ -76,5 +83,12 @@ public class KdegaScormPlayerModel : PageModel
         }).Result;
 
     private string GetPackageLearnerScoCoreId() =>
-        _mediator.Send(new GetCurrentLearnerCmiCoreIdQuery(Guid.Parse(ScormLearnerPackageId!))).Result;
+        _mediator.Send(new GetCurrentLearnerCmiCoreIdQuery(ScormLearnerPackageId!)).Result;
+
+    private string GetLearnerPackageId(string scormPackageId) =>
+        _mediator.Send(new GetCurrentLearnerPackageIdQuery()
+        {
+            LearnerId = LearnerId!,
+            ScormPackageId = scormPackageId
+        }).Result;
 }

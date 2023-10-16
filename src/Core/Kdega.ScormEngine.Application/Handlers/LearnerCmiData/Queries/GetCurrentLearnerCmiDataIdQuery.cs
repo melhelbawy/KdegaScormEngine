@@ -21,8 +21,7 @@ public class GetCurrentLearnerCmiDataIdQueryHandler : BaseHandler, IRequestHandl
     public async Task<string> Handle(GetCurrentLearnerCmiDataIdQuery request, CancellationToken cancellationToken)
     {
         var cmiData = await Context.CmiData.FirstOrDefaultAsync(x => x.LearnerId == request.LearnerId
-                                                                     && x.CmiCoreId == request.CmiCoreId
-                                                                     && x.ScormContentId == request.ScormPackageId, CancellationToken.None);
+                                                                     && x.CmiCoreId == request.CmiCoreId, CancellationToken.None);
 
         Check.NotNull(cmiData, nameof(CmiData));
         return cmiData.Id.ToString();

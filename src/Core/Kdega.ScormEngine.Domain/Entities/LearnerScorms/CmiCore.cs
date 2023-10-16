@@ -2,8 +2,6 @@
 using Kdega.ScormEngine.Domain.Entities.ScormPackages;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Reflection.Metadata;
 
 namespace Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 
@@ -87,4 +85,5 @@ public class CmiCore : AuditableEntity
     public virtual ICollection<CmiInteraction> CmiInteractions { get; set; } = new HashSet<CmiInteraction>();
     public virtual ICollection<CmiCommentFromLearner> CommentFromLearners { get; set; } = new HashSet<CmiCommentFromLearner>();
     public virtual ICollection<CmiCommentFromLms> CommentFromLms { get; set; } = new HashSet<CmiCommentFromLms>();
+    public virtual ICollection<ScormSession> ScormSessions { get; set; } = new HashSet<ScormSession>();
 }

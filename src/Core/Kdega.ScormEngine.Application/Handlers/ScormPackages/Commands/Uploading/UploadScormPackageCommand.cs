@@ -38,7 +38,7 @@ public class UploadScormPackageCommandHandler : BaseHandler, IRequestHandler<Upl
         {
             PackageFolderPath = scormPath,
             UploadingDate = DateTime.Now,
-            TitleFromUpload = request.PackageTitle
+            TitleFromUpload = request.PackageTitle,
         };
 
         await Context.ScormPackages.AddAsync(entry, cancellationToken);

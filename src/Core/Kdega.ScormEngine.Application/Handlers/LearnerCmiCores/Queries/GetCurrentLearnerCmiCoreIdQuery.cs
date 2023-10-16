@@ -8,9 +8,9 @@ public class GetCurrentLearnerCmiCoreIdQuery : IRequest<string>
 {
     public Guid ScormLearnerPackageId { get; set; }
 
-    public GetCurrentLearnerCmiCoreIdQuery(Guid scormLearnerPackageId)
+    public GetCurrentLearnerCmiCoreIdQuery(string scormLearnerPackageId)
     {
-        ScormLearnerPackageId = scormLearnerPackageId;
+        ScormLearnerPackageId = Guid.Parse(scormLearnerPackageId);
     }
 }
 

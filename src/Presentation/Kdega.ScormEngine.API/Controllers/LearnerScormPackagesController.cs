@@ -1,5 +1,4 @@
 ﻿using Kdega.ScormEngine.Application.Handlers.ScormLearners.Commands;
-using Kdega.ScormEngine.Application.Handlers.ScormPackages.Models;
 using Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +18,7 @@ public class LearnerScormPackagesController : BaseController
 
     [HttpPut]
     [SwaggerOperation("Add Scorm package to learner")]
-    [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ScormPackageManifestDto))]
+    [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(bool))]
     [Produces(MediaTypeNames.Application.Json)]
     public async Task<JsonResult> AddLearnerToScormPackage(AddLearnerToScormPackageCommand command)
     {

@@ -19,20 +19,23 @@ public class ProcessUserScormModuleCommandHandler : BaseHandler, IRequestHandler
     {
         if (await IsUserEnrolled(request.LearnerId, request.ScormPackageId)) return false;
 
-        await Context.LearnerScormPackages.AddAsync(new LearnerScormPackage
+        var entity = new LearnerScormPackage
         {
             ScormPackageId = Guid.Parse(request.ScormPackageId),
             LearnerId = request.LearnerId,
             JoiningDate = DateTime.Now
-        }, cancellationToken);
+        };
+
+        await Context.LearnerScormPackages.AddAsync(entity, cancellationToken);
+        await Context.SaveChangesAsync(cancellationToken);
 
         await Mediator.Send(new InitLearnerCmiCoreCommand()
         {
             LearnerId = Guid.Parse(request.LearnerId),
-            LearnerScormPackageId = Guid.Parse(request.ScormPackageId)
+            LearnerScormPackageId = entity.Id
         }, cancellationToken);
 
-        return await Context.SaveChangesAsync(cancellationToken) > 0;
+        return true;
     }
 
     private async Task<bool> IsUserEnrolled(string learnerId, string scormContentId)

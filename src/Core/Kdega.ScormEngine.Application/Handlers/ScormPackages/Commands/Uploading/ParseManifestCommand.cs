@@ -93,7 +93,7 @@ public class ParseManifestCommandHandler : BaseHandler, IRequestHandler<ParseMan
     {
         foreach (XmlNode item in itemRoot.ChildNodes)
         {
-            if (item.Name is "#comment" or "#text" or "title") continue;
+            if (item.Name is not "item") continue;
 
             parentItem.SubOrganizationItems?.Add(new OrganizationItem()
             {
@@ -107,7 +107,7 @@ public class ParseManifestCommandHandler : BaseHandler, IRequestHandler<ParseMan
                 AdlcpCompletionThresholds = GetChildElementInnerText(item, "adlcp:completionThreshold")!,
                 ImsssSequencing = GetChildElementInnerText(item, "imsss:sequencing")!,
                 AdlnavPresentation = GetChildElementInnerText(item, "adlnav:presentation")!,
-                SubOrganizationItems = MapOrganizationItem(item, parentItem)
+                SubOrganizationItems = item.ChildNodes.Count > 0 ? MapOrganizationItem(item, parentItem) : null
             });
         }
         return parentItem.SubOrganizationItems?.ToList()!;
@@ -115,13 +115,10 @@ public class ParseManifestCommandHandler : BaseHandler, IRequestHandler<ParseMan
 
     private List<OrganizationItem> MapOrganizationItems(XmlNode organization, Organization pkgOrganization)
     {
-        var items = new List<OrganizationItem>();
         foreach (XmlNode item in organization.ChildNodes)
         {
-            if (item.Name == "#comment") continue;
+            if (item.Name != "item") continue;
 
-            if (item.NodeType != XmlNodeType.Element || !item.HasChildNodes ||
-                item.LastChild?.Name == "#text") continue;
             var pkgItem = new OrganizationItem
             {
                 Identifier = item.Attributes?["identifier"]?.InnerText ?? "",
@@ -139,15 +136,14 @@ public class ParseManifestCommandHandler : BaseHandler, IRequestHandler<ParseMan
             pkgItem.SubOrganizationItems = MapOrganizationItem(item, pkgItem);
             pkgOrganization.Items.Add(pkgItem);
         }
-        return items;
+        return pkgOrganization.Items.ToList();
     }
 
     private IEnumerable<Resource> MapManifestResources(XmlNode resources, ScormPackage package)
     {
-        var response = new List<Resource>();
         foreach (XmlNode resource in resources.ChildNodes)
         {
-            if (resource.Name is "#comment" or "#text" or "title") continue;
+            if (resource.Name is not "resource") continue;
 
             var packageResource = new Resource()
             {
@@ -160,23 +156,23 @@ public class ParseManifestCommandHandler : BaseHandler, IRequestHandler<ParseMan
             packageResource.Files = MapResourceFiles(resource, packageResource);
             package.Resources.Add(packageResource);
         }
-        return response;
+        return package.Resources;
     }
 
     private List<ResourceFile> MapResourceFiles(XmlNode resource, Resource packageResource)
     {
-        var response = new List<ResourceFile>();
+
         foreach (XmlNode file in resource.ChildNodes)
         {
-            if (file.Name is "#comment" or "#text" or "title" or not "file") continue;
+            if (file.Name is not "file") continue;
 
-            packageResource.Files?.Add(new ResourceFile()
+            packageResource.Files.Add(new ResourceFile()
             {
-                Href = resource.Attributes?["href"]?.InnerText!,
-                Metadata = GetChildElementInnerText(file, "metadata")
+                Href = file.Attributes?["href"]?.InnerText!,
+                Metadata = GetChildElementInnerText(file, "metadata") ?? null
             });
         }
-        return response;
+        return packageResource.Files!.ToList();
     }
 
     private List<ResourceDependency> MapResourceDependencies(XmlNode resource, ScormPackage package)

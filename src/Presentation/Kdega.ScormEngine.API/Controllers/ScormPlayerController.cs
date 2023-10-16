@@ -11,15 +11,15 @@ using System.Net.Mime;
 
 namespace Kdega.ScormEngine.API.Controllers;
 
+
 [ApiController]
-[Route("Kdega")]
 public class ScormPlayerController : BaseController
 {
     public ScormPlayerController(IMediator mediator) : base(mediator)
     {
     }
     //PUT api/LMSSetValue
-    [HttpPut("lms-initialize")]
+    [HttpPost("lms-initialize")]
     [SwaggerOperation("Kdega Scorm LmsInitialize -> Begins a communication session with the LMS.")]
     [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(LmsRequest))]
     [Produces(MediaTypeNames.Application.Json)]
@@ -29,7 +29,7 @@ public class ScormPlayerController : BaseController
     }
 
     //PUT api/LMSFinish | 2004-> Terminate
-    [HttpPut("lms-finish")]
+    [HttpPost("lms-finish")]
     [SwaggerOperation("Kdega Scorm LmsFinish -> Ends a communication session with the LMS.")]
     [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(LmsRequest))]
     [Produces(MediaTypeNames.Application.Json)]
@@ -48,7 +48,7 @@ public class ScormPlayerController : BaseController
         return Json(await Send(new GetValueQuery(query)));
     }
 
-    //POST api/LMSSetValue | 2004 -> SetValue
+    //PUT api/LMSSetValue | 2004 -> SetValue
     [HttpPut("lms-set-value")]
     [SwaggerOperation("Kdega Scorm LmsSetValue -> Saves a value to the LMS.")]
     [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(LmsRequest))]

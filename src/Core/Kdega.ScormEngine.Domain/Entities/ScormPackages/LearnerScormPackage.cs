@@ -1,12 +1,7 @@
 ﻿using Kdega.ScormEngine.Domain.Entities.Base;
 using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kdega.ScormEngine.Domain.Entities.ScormPackages;
 public class LearnerScormPackage : AuditableEntity
@@ -27,12 +22,9 @@ public class LearnerScormPackage : AuditableEntity
 
     [JsonProperty("scorm_package_id")]
     public Guid ScormPackageId { get; set; }
-
-    [JsonProperty("cmi_core_id")]
-    public Guid CmiCoreId { get; set; }
-
     [JsonProperty("Scorm_Package")]
     public ScormPackage ScormPackage { get; set; } = null!;
+
     [JsonProperty("cmi_core")]
-    public CmiCore CmiCore { get; set; } = null!;
+    public virtual ICollection<CmiCore> CmiCores { get; set; } = new HashSet<CmiCore>();
 }

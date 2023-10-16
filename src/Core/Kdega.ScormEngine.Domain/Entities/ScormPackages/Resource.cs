@@ -1,10 +1,5 @@
 ﻿using Kdega.ScormEngine.Domain.Constants.ScormLms;
 using Kdega.ScormEngine.Domain.Entities.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kdega.ScormEngine.Domain.Entities.ScormPackages;
 public class Resource : EntityCreation
@@ -19,5 +14,5 @@ public class Resource : EntityCreation
     public Guid ScormPackageId { get; set; }
     public ScormPackage ScormPackage { get; set; } = null!;
     public virtual ICollection<ResourceDependency>? Dependencies { get; set; }
-    public virtual ICollection<ResourceFile>? Files { get; set; }
+    public virtual ICollection<ResourceFile>? Files { get; set; } = new HashSet<ResourceFile>();
 }

@@ -36,15 +36,33 @@ public class ScormPackagesController : BaseController
         return Json(await Send(command));
     }
 
-    [HttpGet("files/{path}")]
+    [HttpGet($"files/{{*path}}")]
     [SwaggerOperation("Kdega Scorm Scorm package manifest parsing endpoint")]
     [Produces(MediaTypeNames.Application.Octet)]
     public async Task<IActionResult> GetObjectStreamAsync([FromRoute] string path)
     {
+        if (GetFolderPath() != null)
+            path = $"{GetFolderPath()}/{path}";
         var stream = await Mediator.Send(new GetScormPackageStreamQuery() { Path = path });
+
         var filename = path.GetPathSegments().Last();
 
         return File(stream, filename.GetObjectType());
+    }
+
+    private string? GetFolderPath()
+    {
+        var referrer = Request.Headers["referer"];
+        if (referrer.ToString().Length <= 0) return null;
+
+        var decodedUrl = Uri.UnescapeDataString(referrer!);
+        var filesIndex = decodedUrl.IndexOf("files", StringComparison.Ordinal);
+        if (filesIndex == -1) return null;
+
+        var extractedPath = decodedUrl[(filesIndex + "files".Length)..];
+        extractedPath = extractedPath.TrimStart('/');
+        var lastSlashIndex = extractedPath.LastIndexOf('/');
+        return extractedPath[..lastSlashIndex];
     }
 }
 
