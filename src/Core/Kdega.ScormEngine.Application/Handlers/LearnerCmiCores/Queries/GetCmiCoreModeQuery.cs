@@ -18,7 +18,7 @@ public class GetCmiCoreModeQueryHandler : BaseHandler, IRequestHandler<GetCmiCor
     }
     public async Task<LmsRequest> Handle(GetCmiCoreModeQuery request, CancellationToken cancellationToken)
     {
-        var cmiCore = await Context.CmiCores.FindAsync(request.LmsRequest.CoreId);
+        var cmiCore = await Context.CmiCores.FindAsync(Guid.Parse(request.LmsRequest.CoreId));
         request.LmsRequest.InitCode0Success(cmiCore!.LessonMode!);
         return request.LmsRequest;
     }
@@ -37,7 +37,7 @@ public class GetCmiCoreLessonModeQueryHandler : BaseHandler, IRequestHandler<Get
     }
     public async Task<LmsRequest> Handle(GetCmiCoreLessonModeQuery request, CancellationToken cancellationToken)
     {
-        var cmiCore = await Context.CmiCores.FindAsync(request.LmsRequest.CoreId);
+        var cmiCore = await Context.CmiCores.FindAsync(Guid.Parse(request.LmsRequest.CoreId));
         request.LmsRequest.InitCode0Success(cmiCore!.LessonMode!);
         return request.LmsRequest;
     }

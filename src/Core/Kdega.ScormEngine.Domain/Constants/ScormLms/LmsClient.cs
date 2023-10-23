@@ -1,6 +1,8 @@
 ﻿namespace Kdega.ScormEngine.Domain.Constants.ScormLms;
 public class LmsClient
 {
+    public const string ScormVersion = "1.2";
+    public const string ScoIdentifier = "default";
     public const string SessionId = "KdegaScormRteSession";
     public const string BDebug = "false";
     public const string DivDebug = "divDebug";

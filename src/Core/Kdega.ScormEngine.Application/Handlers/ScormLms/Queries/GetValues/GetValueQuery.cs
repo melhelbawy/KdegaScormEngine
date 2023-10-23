@@ -33,7 +33,7 @@ public class GetValueQueryHandler : BaseHandler, IRequestHandler<GetValueQuery, 
         if (request.Request.DataValue is not null && request.Request.DataValue == "NaN")
             request.Request.DataValue = string.Empty;
 
-        if (string.IsNullOrEmpty(request.Request.DataValue))
+        if (string.IsNullOrEmpty(request.Request.DataItem))
         {
             request.Request.InitCode201();
             return request.Request;

@@ -20,7 +20,7 @@ public class GetCmiCoreCompletionStatusQueryHandler : BaseHandler, IRequestHandl
     }
     public async Task<LmsRequest> Handle(GetCmiCoreCompletionStatusQuery request, CancellationToken cancellationToken)
     {
-        var cmiCore = await Context.CmiCores.FindAsync(request.LmsRequest.CoreId);
+        var cmiCore = await Context.CmiCores.FindAsync(Guid.Parse(request.LmsRequest.CoreId));
         request.LmsRequest.InitCode0Success(cmiCore.CompletionStatus.IsNullOrEmpty()
             ? ScormCmiCore.CmiCoreCompletionStatus.Unknown
             : cmiCore.CompletionStatus!);
