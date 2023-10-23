@@ -120,8 +120,8 @@ function ApiClass() {
         this._coreid = lmsClient.coreId;
         this._scorm_package_id = lmsClient.scorm_package_id;
         this._sco_identifier = lmsClient.sco_identifier;
-        // LMSInfo object carries arguments to the server and back
-        var lmsRequest = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier));
+        // LmsRequest object carries arguments to the server and back
+        var lmsRequest = JSON.stringify(createLMSRequest(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier));
         WriteToDebug("LMSInitialize: " + lmsRequest);
         var that = this; // get reference to current API instance
         $.ajax({
@@ -182,8 +182,8 @@ function ApiClass() {
             this.LastErrorDiagnostic = "Error from API";
             return "false";
         }
-        // LMSInfo object carries arguments to the server and back
-        var lmsRequest = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier));
+        // LmsRequest object carries arguments to the server and back
+        var lmsRequest = JSON.stringify(createLMSRequest(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier));
         WriteToDebug("LMSFinish: " + JSON.stringify({ 'lmsRequest': lmsRequest }));
         var that = this; // get reference to current instance
         $.ajax({
@@ -238,7 +238,9 @@ function ApiClass() {
             this.LastErrorDiagnostic = "Error from API";
             return "";
         }
-        var lmsRequest = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier, name));
+        //var lmsRequest = JSON.stringify(createLMSQuery(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier, name));
+
+        var lmsRequest = createLMSQuery(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier, name);
         WriteToDebug("GETVALUE: " + JSON.stringify({ 'lmsRequest': lmsRequest }));
 
         var returnValue = '';
@@ -301,7 +303,7 @@ function ApiClass() {
             this.LastErrorDiagnostic = "Error from API";
             return "false";
         }
-        var lmsRequest = JSON.stringify(createLMSInfo(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier, name, value));
+        var lmsRequest = JSON.stringify(createLMSRequest(this._sessionid, this._userid, this._coreid, this._learnerPackageId, this._scorm_package_id, this._sco_identifier, name, value));
         WriteToDebug("SETVALUE: " + JSON.stringify({ 'lmsRequest': lmsRequest }));
         var returnValue = '';
         var that = this; // get reference to current API instance
@@ -408,18 +410,18 @@ function ApiClass() {
 } // end API
 /*********************************************************************************
 **
-** Function createLMSInfo(...)
-** returns an LMSInfo object for data transfer to and from the server
+** Function createLMSRequest(...)
+** returns an LmsRequest object for data transfer to and from the server
  * 
 *********************************************************************************/
-function createLMSInfo(sessionId, learnerId, coreId, learnerPackageId, scormPackageId, scoIdentifier, dataItem, dataValue, errorCode, errorString, errorDiagnostic, returnValue) {
+function createLMSRequest(sessionId, learnerId, coreId, learnerPackageId, scormPackageId, scoIdentifier, dataItem, dataValue, errorCode, errorString, errorDiagnostic, returnValue) {
     const lmsRequest = new Object();
     lmsRequest.sessionId = sessionId;
-    lmsRequest.LearnerId = learnerId;
+    lmsRequest.learnerId = learnerId;
     lmsRequest.coreId = coreId;
     lmsRequest.scoIdentifier = scoIdentifier;
     lmsRequest.scorm_package_id = scormPackageId;
-    lmsRequest.LearnerScormPackageId = learnerPackageId;
+    lmsRequest.learnerScormPackageId = learnerPackageId;
     lmsRequest.dataItem = dataItem;
     lmsRequest.dataValue = dataValue;
     lmsRequest.errorCode = errorCode;
@@ -435,6 +437,32 @@ function createLMSInfo(sessionId, learnerId, coreId, learnerPackageId, scormPack
     }
     return lmsRequest;
 }
+
+function createLMSQuery(sessionId, learnerId, coreId, learnerPackageId, scormPackageId, scoIdentifier, dataItem, dataValue, errorCode, errorString, errorDiagnostic, returnValue) {
+    //const lmsRequest = `SessionId=${sessionId}&LearnerId=${learnerId}&coreId=${coreId}&ScoIdentifier=${scoIdentifier}&ScormPackageId=${scormPackageId}&LearnerScormPackageId=${learnerPackageId}&DataItem=${dataItem}&DataValue=${dataValue}&ErrorCode=${errorCode}&ErrorString=${errorString}&ErrorDiagnostic=${errorDiagnostic}&ReturnValue=${returnValue}`;
+    //const lmsRequest = `SessionId:${sessionId},LearnerId:${learnerId},coreId:${coreId},ScoIdentifier:${scoIdentifier},ScormPackageId:${scormPackageId},LearnerScormPackageId:${learnerPackageId},DataItem:${dataItem},DataValue:${dataValue},ErrorCode:${errorCode},ErrorString:${errorString},ErrorDiagnostic:${errorDiagnostic},ReturnValue:${returnValue}`;
+    const lmsRequest =
+    {
+        SessionId: sessionId,
+        LearnerId: learnerId,
+        CoreId: coreId,
+        ScoIdentifier: scoIdentifier,
+        ScormPackageId: scormPackageId,
+        LearnerScormPackageId: learnerPackageId,
+        DataItem: dataItem,
+        DataValue: dataValue,
+        ErrorCode: errorCode,
+        ErrorString: errorString,
+        ErrorDiagnostic: errorDiagnostic,
+        ReturnValue: returnValue
+    };
+    return lmsRequest;
+}
+
+
+
+
+
 /*********************************************************************************
 **
 ** Debug functions

@@ -33,10 +33,8 @@ public class SetValueCommandHandler : BaseHandler, IRequestHandler<SetValueComma
         request.Request.ReturnValue = "true";
         request.Request.ErrorString = string.Empty;
 
-        if (request.Request.DataValue!.Equals("NaN"))
+        if (request.Request.DataValue is not null && request.Request.DataValue == "NaN")
             request.Request.DataValue = string.Empty;
-
-        await _scormMediator.Handle(request.Request.DataItem, request.Request);
 
         if (!await IsValidCoreId(request.Request.CoreId))
             request.Request.InitCode301();

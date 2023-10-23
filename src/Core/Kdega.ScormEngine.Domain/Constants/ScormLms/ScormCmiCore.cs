@@ -47,6 +47,12 @@ public class ScormCmiCore
         public const string Browsed = "browsed";
         public const string NotAttempted = "not attempted";
     }
+    public class CmiCoreSuccessStatus
+    {
+        public const string Passed = "passed";
+        public const string Failed = "failed";
+        public const string Unknown = "unknown";
+    }
 
     public class CmiCoreEntry
     {

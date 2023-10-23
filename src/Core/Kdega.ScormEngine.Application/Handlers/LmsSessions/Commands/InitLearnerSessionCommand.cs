@@ -1,4 +1,4 @@
-﻿using Kdega.ScormEngine.Application.Constants;
+﻿using Kdega.ScormEngine.Domain.Constants.ScormLms;
 using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
 

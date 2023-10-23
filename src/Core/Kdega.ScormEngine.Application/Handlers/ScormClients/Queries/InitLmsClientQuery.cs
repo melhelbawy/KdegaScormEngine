@@ -1,9 +1,9 @@
-﻿using Kdega.ScormEngine.Application.Constants;
-using Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Queries;
+﻿using Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Queries;
 using Kdega.ScormEngine.Application.Handlers.LmsSessions.Queries;
 using Kdega.ScormEngine.Application.Handlers.ScormClients.Models;
 using Kdega.ScormEngine.Application.Handlers.ScormLearners.Queries;
 using Kdega.ScormEngine.Application.Handlers.ScormPackages.Queries;
+using Kdega.ScormEngine.Domain.Constants.ScormLms;
 using MediatR;
 
 namespace Kdega.ScormEngine.Application.Handlers.ScormClients.Queries;

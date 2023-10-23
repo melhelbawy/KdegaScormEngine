@@ -1,4 +1,5 @@
 ﻿using Kdega.ScormEngine.Application.Attributes;
+using Kdega.ScormEngine.Application.Enums;
 using Kdega.ScormEngine.Application.Extensions;
 using Kdega.ScormEngine.Application.Interfaces;
 using MediatR;
@@ -8,24 +9,25 @@ using System.Reflection;
 namespace Kdega.ScormEngine.Application.ScormModelKeyMediator;
 public class ScormMediator : IScormMediator
 {
-    private readonly IDictionary<string, List<object>> _components;
+    private readonly IDictionary<ScormApiMethod, Dictionary<string, List<object>>> _components;
     private readonly IMediator _mediator;
     private readonly IServiceProvider _serviceProvider;
 
     public ScormMediator(IServiceProvider serviceProvider)
     {
-        _components = new Dictionary<string, List<object>>();
+        _components = new Dictionary<ScormApiMethod, Dictionary<string, List<object>>>();
         _serviceProvider = serviceProvider;
         _mediator = serviceProvider.GetCustomRequiredService<IMediator>();
 
         Register().Wait();
     }
 
-    public async Task Handle<T>(string keyName, T request)
+    public async Task Handle<T>(string keyName, T request, ScormApiMethod apiMethod)
     {
-        var keyCommands = _components[keyName];
-
-        foreach (var keyCommand in keyCommands)
+        var keyCommands = _components[apiMethod];
+        var commandObjects = keyCommands.Where(x => x.Key == keyName)
+            .SelectMany(x => x.Value).ToList();
+        foreach (var keyCommand in commandObjects)
         {
             SetLmsRequestProperty(keyCommand, request);
             await _mediator.Send(keyCommand);
@@ -46,22 +48,31 @@ public class ScormMediator : IScormMediator
                 var componentName = attribute.ComponentName;
 
                 if (ActivatorUtilities.CreateInstance(_serviceProvider, componentType) is { } component)
-                    RegisterComponent(component, componentName);
+                    RegisterComponent(component, componentName, attribute.ApiMethod);
             }
         });
     }
 
-    public void RegisterComponent(object component, string componentName)
+    public void RegisterComponent(object component, string componentName, ScormApiMethod apiMethod)
     {
-        if (_components.ContainsKey(componentName))
-            _components[componentName].Add(component);
+        if (_components.ContainsKey(apiMethod))
+        {
+            if (_components[apiMethod].ContainsKey(componentName))
+            {
+                _components[apiMethod][componentName].Add(component);
+            }
+            else
+            {
+                _components[apiMethod].Add(componentName, new List<object>() { component });
+            }
+        }
         else
-            _components.Add(componentName, new List<object> { component });
-
+            _components.Add(apiMethod, new Dictionary<string, List<object>>() { { componentName, new List<object>() { component } } });
     }
 
     private static void SetLmsRequestProperty<T>(object keyCommand, T request)
     {
+        var props = keyCommand.GetType().GetProperties();
         foreach (var property in keyCommand.GetType().GetProperties())
         {
             if (property.PropertyType == typeof(T))

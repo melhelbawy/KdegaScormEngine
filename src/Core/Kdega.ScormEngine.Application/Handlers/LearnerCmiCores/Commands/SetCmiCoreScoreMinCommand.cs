@@ -1,5 +1,6 @@
 ﻿using Kdega.ScormEngine.Application.Attributes;
 using Kdega.ScormEngine.Application.Common.Models;
+using Kdega.ScormEngine.Application.Enums;
 using Kdega.ScormEngine.Application.Extensions;
 using Kdega.ScormEngine.Application.Helpers;
 using MediatR;
@@ -7,15 +8,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Commands;
 
-[ScormMediatorComponent("cmi.core.score.min")]
+[ScormMediatorComponent("cmi.core.score.min", ScormApiMethod.Set)]
 public class SetCmiCoreScoreMinCommand : IRequest<LmsRequest>
 {
     public LmsRequest LmsRequest { get; set; } = null!;
 }
 
-public class SeteCmiCoreScoreMinCommandHandler : BaseHandler, IRequestHandler<SetCmiCoreScoreMinCommand, LmsRequest>
+public class SetCmiCoreScoreMinCommandHandler : BaseHandler, IRequestHandler<SetCmiCoreScoreMinCommand, LmsRequest>
 {
-    public SeteCmiCoreScoreMinCommandHandler(IServiceProvider provider) : base(provider)
+    public SetCmiCoreScoreMinCommandHandler(IServiceProvider provider) : base(provider)
     {
     }
 

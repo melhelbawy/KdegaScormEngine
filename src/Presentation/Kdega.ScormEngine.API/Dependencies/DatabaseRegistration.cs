@@ -18,6 +18,8 @@ public static class DatabaseRegistration
             RegisterInMemoryDbContext(builder);
         else
             RegisterSqlDbContext(builder);
+
+
     }
     private static void RegisterSqlDbContext(WebApplicationBuilder builder)
     {

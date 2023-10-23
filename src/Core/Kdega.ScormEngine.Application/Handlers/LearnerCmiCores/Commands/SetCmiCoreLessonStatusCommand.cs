@@ -1,5 +1,6 @@
 ﻿using Kdega.ScormEngine.Application.Attributes;
 using Kdega.ScormEngine.Application.Common.Models;
+using Kdega.ScormEngine.Application.Enums;
 using Kdega.ScormEngine.Application.Extensions;
 using Kdega.ScormEngine.Application.Helpers;
 using Kdega.ScormEngine.Domain.Constants.ScormLms;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Commands;
 
-[ScormMediatorComponent("cmi.core.lesson_status")]
+[ScormMediatorComponent("cmi.core.lesson_status", ScormApiMethod.Set)]
 public class SetCmiCoreLessonStatusCommand : IRequest<LmsRequest>
 {
     public LmsRequest LmsRequest { get; set; } = null!;

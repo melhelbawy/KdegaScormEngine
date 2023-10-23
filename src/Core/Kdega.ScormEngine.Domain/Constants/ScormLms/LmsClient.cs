@@ -7,5 +7,6 @@ public class LmsClient
     public const string ScoFrameClientId = "sco";
     public const string ResourceType = "webcontent";
     public const string DefaultAdlcpScormType = "asset";
+    //public const string ScoFrameClientId = "kdegaPlayer";
 
 }

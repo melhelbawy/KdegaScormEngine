@@ -1,5 +1,6 @@
 ﻿using Kdega.ScormEngine.Application.Attributes;
 using Kdega.ScormEngine.Application.Common.Models;
+using Kdega.ScormEngine.Application.Enums;
 using Kdega.ScormEngine.Application.Extensions;
 using Kdega.ScormEngine.Application.Helpers;
 using MediatR;
@@ -7,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Commands;
 
-[ScormMediatorComponent("cmi.core.exit")]
+[ScormMediatorComponent("cmi.core.exit", ScormApiMethod.Set)]
 public class SetCmiCoreExitCommand : IRequest<LmsRequest>
 {
     public LmsRequest LmsRequest { get; set; } = null!;

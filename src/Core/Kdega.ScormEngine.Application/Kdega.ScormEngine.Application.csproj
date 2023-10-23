@@ -28,4 +28,8 @@
 		<ProjectReference Include="..\Kdega.ScormEngine.Domain\Kdega.ScormEngine.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Constants\" />
+	</ItemGroup>
+
 </Project>
