@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Commands;
 
+#region Scorm Versions 1.1 and 1.2
+
 [ScormMediatorComponent("cmi.core.lesson_status", ScormApiMethod.Set)]
 public class SetCmiCoreLessonStatusCommand : IRequest<LmsRequest>
 {
@@ -38,5 +40,5 @@ public class SetCmiCoreLessonStatusCommandHandler : BaseHandler, IRequestHandler
         return request.LmsRequest;
     }
 
-
 }
+#endregion

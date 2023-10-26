@@ -56,7 +56,7 @@ public class CmiCore : AuditableEntity
     public string? CompletionStatus { get; set; }
     [JsonProperty("completion_threshold")]
     public decimal? CompletionThreshold { get; set; }
-    [JsonProperty("location ")]
+    [JsonProperty("location")]
     public string? Location { get; set; }
     [JsonProperty("progress_measure ")]
     public decimal? ProgressMeasure { get; set; }
