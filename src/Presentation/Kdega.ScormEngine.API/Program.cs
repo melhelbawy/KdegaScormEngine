@@ -31,6 +31,8 @@ try
     if (!app.Environment.IsTesting())
         app.MigrateDatabase();
 
+    app.UseCors(ServicesRegistration.CorePolicy);
+
     app.UseHttpsRedirection();
 
     app.UseRouting();

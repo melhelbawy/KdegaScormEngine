@@ -7,6 +7,7 @@ public class InitLearnerCmiCoreCommand : IRequest<string>
 {
     public Guid LearnerScormPackageId { get; set; }
     public Guid LearnerId { get; set; }
+    public string LearnerName { get; set; } = string.Empty;
 }
 
 public class InitLearnerCmiCoreCommandHandler : BaseHandler, IRequestHandler<InitLearnerCmiCoreCommand, string>
@@ -20,6 +21,7 @@ public class InitLearnerCmiCoreCommandHandler : BaseHandler, IRequestHandler<Ini
         var learnerCmiCore = new CmiCore
         {
             LearnerId = request.LearnerId.ToString(),
+            StudentName = request.LearnerName,
             LessonStatus = ScormCmiCore.CmiCoreLessonStatus.NotAttempted,
             Credit = ScormCmiCore.CmiCoreCredits.Credit,
             LessonMode = ScormCmiCore.CmiCoreLessonMode.Normal,

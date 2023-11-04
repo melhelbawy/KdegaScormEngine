@@ -5,8 +5,10 @@ using Kdega.ScormEngine.Infrastructure;
 namespace Kdega.ScormEngine.API.Dependencies;
 public static class ServicesRegistration
 {
+    public static string CorePolicy = "CorePolicy";
     public static void AddDependencyServices(this WebApplicationBuilder builder)
     {
+
         var services = builder.Services;
 
         services.AddRazorPages();
@@ -17,6 +19,12 @@ public static class ServicesRegistration
         services.AddApplicationServices();
         services.AddInfrastructureServices(builder.Configuration);
 
+        services.AddCors(options =>
+        {
+            options.AddPolicy(CorePolicy, cfx => cfx.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        });
         builder.AddDatabaseRegistration();
+
+
     }
 }

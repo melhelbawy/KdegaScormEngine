@@ -7,6 +7,7 @@ namespace Kdega.ScormEngine.Application.Handlers.ScormLearners.Commands;
 public class AddLearnerToScormPackageCommand : IRequest<bool>
 {
     public string LearnerId { get; set; } = null!;
+    public string LearnerName { get; set; } = null!;
     public string ScormPackageId { get; set; } = null!;
 }
 
@@ -32,7 +33,8 @@ public class ProcessUserScormModuleCommandHandler : BaseHandler, IRequestHandler
         await Mediator.Send(new InitLearnerCmiCoreCommand()
         {
             LearnerId = Guid.Parse(request.LearnerId),
-            LearnerScormPackageId = entity.Id
+            LearnerScormPackageId = entity.Id,
+            LearnerName = request.LearnerName
         }, cancellationToken);
 
         return true;
