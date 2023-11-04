@@ -68,7 +68,7 @@ public class CmiCore : AuditableEntity
     [JsonProperty("success_status")]
     public string? SuccessStatus { get; set; }
     [StringLength(4096)]
-    [JsonProperty("comments ")]
+    [JsonProperty("comments")]
     public string? Comments { get; set; }
     [JsonProperty("timestamp")]
     public DateTime? Timestamp { get; set; }
