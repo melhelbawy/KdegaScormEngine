@@ -7,6 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Constants\**" />
+	  <EmbeddedResource Remove="Constants\**" />
+	  <None Remove="Constants\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="11.7.1" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
 		<PackageReference Include="Mapster" Version="7.3.0" />
@@ -29,7 +35,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Constants\" />
+	  <Folder Include="Handlers\CommentsFromLearner\Commands\" />
 	</ItemGroup>
 
 </Project>

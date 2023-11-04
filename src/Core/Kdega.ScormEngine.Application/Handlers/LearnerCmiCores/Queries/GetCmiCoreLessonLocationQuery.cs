@@ -33,18 +33,18 @@ public class GetCmiCoreLessonLocationQueryHandler : BaseHandler, IRequestHandler
 
 #region Scorm Versions 2004 2nd, 3rd, 4th Edition
 [ScormMediatorComponent("cmi.location", ScormApiMethod.Get)]
-public class GetCmiCoreLocationQuery : IRequest<LmsRequest>
+public class GetCmiLocationQuery : IRequest<LmsRequest>
 {
     public LmsRequest LmsRequest { get; set; } = null!;
 }
 
-public class GetCmiCoreLocationQueryHandler : BaseHandler, IRequestHandler<GetCmiCoreLocationQuery, LmsRequest>
+public class GetCmiLocationQueryHandler : BaseHandler, IRequestHandler<GetCmiLocationQuery, LmsRequest>
 {
-    public GetCmiCoreLocationQueryHandler(IServiceProvider provider) : base(provider)
+    public GetCmiLocationQueryHandler(IServiceProvider provider) : base(provider)
     {
     }
 
-    public async Task<LmsRequest> Handle(GetCmiCoreLocationQuery request, CancellationToken cancellationToken)
+    public async Task<LmsRequest> Handle(GetCmiLocationQuery request, CancellationToken cancellationToken)
     {
         var cmiCore = await Context.CmiCores
             .FirstOrDefaultAsync(x => x.Id == Guid.Parse(request.LmsRequest.CoreId), cancellationToken);

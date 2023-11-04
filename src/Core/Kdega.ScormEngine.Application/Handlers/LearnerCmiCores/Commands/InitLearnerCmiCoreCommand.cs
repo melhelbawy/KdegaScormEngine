@@ -1,6 +1,7 @@
 ﻿using Kdega.ScormEngine.Domain.Constants.ScormLms;
 using Kdega.ScormEngine.Domain.Entities.LearnerScorms;
 using MediatR;
+using System.Xml;
 
 namespace Kdega.ScormEngine.Application.Handlers.LearnerCmiCores.Commands;
 public class InitLearnerCmiCoreCommand : IRequest<string>
@@ -27,6 +28,7 @@ public class InitLearnerCmiCoreCommandHandler : BaseHandler, IRequestHandler<Ini
             LessonMode = ScormCmiCore.CmiCoreLessonMode.Normal,
             Entry = ScormCmiCore.CmiCoreEntry.AbInitio,
             LearnerScormPackageId = request.LearnerScormPackageId,
+            TotalTime = XmlConvert.ToString(TimeSpan.Zero)
         };
         await Context.CmiCores.AddAsync(learnerCmiCore, cancellationToken);
         await Context.SaveChangesAsync(cancellationToken);

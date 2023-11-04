@@ -1,7 +1,7 @@
 ﻿using Kdega.ScormEngine.Application.Behavior;
 using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 using static System.Decimal;
 using static System.Text.RegularExpressions.Regex;
 
@@ -146,35 +146,24 @@ public class ScormDataValidatorHelper
     /// </summary>
     /// <param name="dataValue"></param>
     /// <returns></returns>
-    public static bool IsCmiTimespan(string dataValue)
+    public static bool IsCmiTimespan(string dataValue) =>
+        ValidateIso8601Duration(dataValue);
+
+    /// <summary>
+    /// We define a regular expression pattern that matches the ISO 8601 duration format, allowing for different components such as
+    /// years (Y), months (M), days (D), hours (H), minutes (M), and seconds (S).
+    /// We use Regex.IsMatch to check if the durationString matches the pattern.
+    /// If it does, the function returns true, indicating that the string is in the correct format.
+    /// If it doesn't match the pattern, it returns false.
+    /// You can use the ValidateIso8601Duration function to validate other ISO 8601 duration strings in your C# application.
+    /// </summary>
+    /// <param name="durationString"></param>
+    /// <returns></returns>
+    private static bool ValidateIso8601Duration(string durationString)
     {
-        // CMITimeSpan Is like "HHHH:MM:SS.SS";
-
-        Check.NotNull(dataValue, nameof(dataValue));
-        if (dataValue.Length > 13) return false;
-
-        var delimiter = TimeDelimiter.ToCharArray();
-        var splitsStrings = dataValue.Split(delimiter, 3);
-        if (splitsStrings.Length != 3) return false;
-        var hours = splitsStrings[0];
-        var minutes = splitsStrings[1];
-        var secs = splitsStrings[2];
-
-        if (hours.Length is < 2 or > 4) return false;
-        if (minutes.Length != 2) return false;
-
-        if (secs.IndexOf(".", StringComparison.Ordinal) == 0 || secs.IndexOf(".", StringComparison.Ordinal) == 1) return false;
-
-        if (!IsCmiInteger(hours)) return false;
-        if (!IsCmiInteger(minutes)) return false;
-        if (!IsCmiDecimal(secs)) return false;
-
-        var iMinutes = Convert.ToInt32(minutes);
-        if (iMinutes is < 0 or > 99) return false;
-        var dSecs = Convert.ToDecimal(secs);
-        return dSecs >= 0 && dSecs <= Convert.ToDecimal("59.99");
+        const string pattern = @"^P(\d+Y)?(\d+M)?(\d+D)?T(\d+H)?(\d+M)?(\d+(\.\d+)?S)?$";
+        return IsMatch(durationString, pattern);
     }
-
 
     /// <summary>
     /// SCORM2004:
@@ -201,52 +190,15 @@ public class ScormDataValidatorHelper
     public static string AddCmiTime(string cmiTimeSpan1, string cmiTimeSpan2)
     {
         if (!IsCmiTimespan(cmiTimeSpan1))
-        {
             return "false";
-        }
         if (!IsCmiTimespan(cmiTimeSpan2))
-        {
             return "false";
-        }
 
-        // both fields are valid. Now add them
-        //HHHH:MM:SS.SS
-        // split the first one into its parts
-        var delimiter = TimeDelimiter.ToCharArray();
-        var s1a = cmiTimeSpan1.Split(delimiter, 3);
-        var hours1 = s1a[0];
-        var mins1 = s1a[1];
-        var secs1 = s1a[2];
-        var iHours1 = Convert.ToInt32(hours1);
-        var iMins1 = Convert.ToInt32(mins1);
-        var dSecs1 = Convert.ToDecimal(secs1);
-        // split the second one into its parts
-        var s2a = cmiTimeSpan2.Split(delimiter, 3);
-        var hours2 = s2a[0];
-        var mins2 = s2a[1];
-        var secs2 = s2a[2];
-        var iHours2 = Convert.ToInt32(hours2);
-        var iMins2 = Convert.ToInt32(mins2);
-        var dSecs2 = Convert.ToDecimal(secs2);
-        // add the seconds together
-        var totsecs = dSecs1 + dSecs2;
-        // figure the remainder (take mod 60)
-        var SecsRemainder = (totsecs % 60);
-        var iMinstoCarry = (Convert.ToInt32(totsecs - SecsRemainder)) / 60;
-        //  add the minutes together
-        var iMinsTot = iMins1 + iMins2 + iMinstoCarry;
-        var iMinsRemainder = (iMinsTot % 60);
-        var iMinsToCarry = (iMinsTot - iMinsRemainder) / 60;
-        // add the hours together
-        var iHoursTot = iHours1 + iHours2 + iMinsToCarry;
-        // assemble the new value
-        var sNew = new StringBuilder();
-        sNew.AppendFormat("{0,4:0000}", iHoursTot);
-        sNew.Append(":");
-        sNew.AppendFormat("{0,2:00}", iMinsRemainder);
-        sNew.Append(":");
-        sNew.AppendFormat("{0,4:00.00}", SecsRemainder);
-        return sNew.ToString();
+        var duration1 = XmlConvert.ToTimeSpan(cmiTimeSpan1);
+        var duration2 = XmlConvert.ToTimeSpan(cmiTimeSpan2);
+
+        var sum = duration1 + duration2;
+        return XmlConvert.ToString(XmlConvert.ToTimeSpan(cmiTimeSpan1) + XmlConvert.ToTimeSpan(cmiTimeSpan2));
     }
 
 
